@@ -54,4 +54,30 @@ transport_stops = read_stops_from_csv(csv_file_path)
 # Compare stops
 for stop_pair in itertools.combinations(transport_stops, 2):
     stop_a, stop_b = stop_pair
-    print(f"Comparing {stop_a.name} and {stop_b.name}")
+
+
+import pandas as pd
+import networkx as nx
+import matplotlib.pyplot as plt
+
+# Read latitude and longitude data from a CSV file
+stops_df = pd.read_csv(r"C:\Users\18116\Desktop\AAD\file\urban_transport_network_stops.csv")
+
+# Read distance data from a CSV file
+routes_df = pd.read_csv(r"C:\Users\18116\Desktop\AAD\file\urban_transport_network_routes.csv")
+
+# Create a directed graph
+G = nx.DiGraph()
+
+# Add sites and edges
+for _, row in stops_df.iterrows():
+    G.add_node(row['stop_id'], pos=(row['longitude'], row['latitude']))
+
+for _, row in routes_df.iterrows():
+    G.add_edge(row['start_stop_id'], row['end_stop_id'], weight=row['distance'])
+
+# Draw a directed graph
+pos = nx.get_node_attributes(G, 'pos')
+nx.draw(G, pos, with_labels=True, node_size=100, node_color="skyblue", font_size=10, font_color="black", font_weight="bold", arrows=True)
+plt.title("Transport Network Directed Graph")
+plt.show()
