@@ -48,7 +48,7 @@ def read_stops_from_csv(file_path):
         return []
 
 # File path
-csv_file_path = r"C:\Users\18116\Desktop\AAD\file\urban_transport_network_stops.csv"
+csv_file_path = "urban_transport_network_stops.csv"
 transport_stops = read_stops_from_csv(csv_file_path)
 
 # Compare stops
@@ -61,10 +61,10 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 # Read latitude and longitude data from a CSV file
-stops_df = pd.read_csv(r"C:\Users\18116\Desktop\AAD\file\urban_transport_network_stops.csv")
+stops_df = pd.read_csv("urban_transport_network_stops.csv")
 
 # Read distance data from a CSV file
-routes_df = pd.read_csv(r"C:\Users\18116\Desktop\AAD\file\urban_transport_network_routes.csv")
+routes_df = pd.read_csv("urban_transport_network_routes.csv")
 
 # Create a directed graph
 G = nx.DiGraph()
