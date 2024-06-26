@@ -1,5 +1,6 @@
-import pandas as pd
 from enum import Enum, auto
+import pandas as pd
+import itertools
 
 class ZoneType(Enum):
     RESIDENTIAL = auto()
@@ -20,6 +21,12 @@ class TransportStop:
 
     def __str__(self):
         return f"Stop {self.stop_id}: {self.name} ({self.latitude}, {self.longitude}), Zone: {self.zone_type.name}"
+
+    def __repr__(self):
+        return f"TransportStop(stop_id={self.stop_id}, name='{self.name}', latitude={self.latitude}, longitude={self.longitude}, zone_type={self.zone_type})"
+
+    def __lt__(self, other):
+        return self.stop_id < other.stop_id
 
 # Read data from a CSV file
 def read_stops_from_csv(file_path):
@@ -44,7 +51,7 @@ def read_stops_from_csv(file_path):
 csv_file_path = r"C:\Users\18116\Desktop\AAD\file\urban_transport_network_stops.csv"
 transport_stops = read_stops_from_csv(csv_file_path)
 
-# Print data
-for stop in transport_stops:
-    print(stop)
-
+# Compare stops
+for stop_pair in itertools.combinations(transport_stops, 2):
+    stop_a, stop_b = stop_pair
+    print(f"Comparing {stop_a.name} and {stop_b.name}")
