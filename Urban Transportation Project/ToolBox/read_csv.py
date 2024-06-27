@@ -34,17 +34,16 @@ def read_stops_from_csv(file_path):
 csv_file_path = "urban_transport_network_stops.csv"
 transport_stops = read_stops_from_csv(csv_file_path)
 
-def read_csv_file(filename):
-    try:
-        with open(filename, 'r') as file:
-            reader = csv.reader(file)
-            header = next(reader)  # Skip the header row
-            data = [tuple(map(float, row)) for row in reader]
-            return data
-    except FileNotFoundError:
-        print(f"File '{filename}' does not exist.")
-        return None
+# 创建一个空字典来存储数据
+routes_data = {}
 
-filename = "urban_transport_network_routes.csv"
-route_data = read_csv_file(filename)
-
+# 读取CSV文件
+with open('urban_transport_network_routes.csv', 'r') as csvfile:
+    reader = csv.reader(csvfile)
+    next(reader)  
+    for row in reader:
+        try:
+            start_stop_id, end_stop_id, distance = map(int, row)
+            routes_data[(start_stop_id, end_stop_id)] = distance
+        except ValueError:
+            pass  
