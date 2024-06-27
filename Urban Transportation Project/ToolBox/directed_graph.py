@@ -2,7 +2,17 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import pandas as pd
 
-node_labels={1:"Chatelet",2:"Gare de Lyon",3:"Bastille",4:"Nation",5:"Opera",6:"Republique",7:"Montparnasse",8:"La Defense",9:"Saint-Lazare"}
+node_labels = {
+    1: "Chatelet",
+    2: "Gare de Lyon",
+    3: "Bastille",
+    4: "Nation",
+    5: "Opera",
+    6: "Republique",
+    7: "Montparnasse",
+    8: "La Defense",
+    9: "Saint-Lazare"
+}
 
 # Read latitude and longitude data from a CSV file
 stops_df = pd.read_csv("urban_transport_network_stops.csv")

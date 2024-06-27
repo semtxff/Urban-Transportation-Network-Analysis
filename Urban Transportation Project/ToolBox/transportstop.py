@@ -1,13 +1,11 @@
-import os
-import sys
-# 获取当前脚本文件的目录
-current_dir = os.path.dirname(os.path.abspath(__file__))
+from enum import Enum, auto
+import csv
 
-# 将上级目录（项目根目录）添加到系统路径中
-project_root = os.path.dirname(current_dir)
-sys.path.append(project_root)
-
-from ToolBox.zonetype import ZoneType
+class ZoneType(Enum):
+    RESIDENTIAL = auto()
+    COMMERCIAL = auto()
+    INDUSTRIAL = auto()
+    MIXED = auto()
 
 class TransportStop:
     def __init__(self, stop_id, name, latitude, longitude, zone_type):
@@ -28,3 +26,25 @@ class TransportStop:
 
     def __lt__(self, other):
         return self.stop_id < other.stop_id
+    
+def read_transport_stops_from_csv(filename):
+    stops = []
+    with open(filename, 'r') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            try:
+                start_stop_id = int(row['start_stop_id'])
+                end_stop_id = row['end_stop_id']  
+                distance = float(row['distance'])  
+                
+                stops.append(stop)
+            except ValueError:
+                print(f"Error processing row: {row}")
+    return stops
+
+# Example usage:
+if __name__ == "__main__":
+    csv_filename = "urban_transport_network_routes.csv"
+    transport_stops = read_transport_stops_from_csv(csv_filename)
+    for stop in transport_stops:
+        print(stop)

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_c6f47aa8f8b74ac63b6ee1a466202fc2 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_c6f47aa8f8b74ac63b6ee1a466202fc2" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_c6f47aa8f8b74ac63b6ee1a466202fc2 = L.map(
+                "map_c6f47aa8f8b74ac63b6ee1a466202fc2",
+                {
+                    center: [48.86121086666667, 2.340758688888889],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 12,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_61776effcc2ad9827ca84f6ef9df36b7 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors", "detectRetina": false, "maxNativeZoom": 19, "maxZoom": 19, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            );
+        
+    
+            tile_layer_61776effcc2ad9827ca84f6ef9df36b7.addTo(map_c6f47aa8f8b74ac63b6ee1a466202fc2);
+        
+    
+            var marker_e0c5275a866a86e55f6f3ec0c71bcdfb = L.marker(
+                [48.8588443, 2.3470599],
+                {}
+            ).addTo(map_c6f47aa8f8b74ac63b6ee1a466202fc2);
+        
+    
+        var popup_d343c3da890c47185fd30815d1bf5f59 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_40026e4c32daec52c6aa07e4561a0d76 = $(`<div id="html_40026e4c32daec52c6aa07e4561a0d76" style="width: 100.0%; height: 100.0%;">Stop ID: 1<br>Name: Chatelet<br>Zone Type: Residential</div>`)[0];
+                popup_d343c3da890c47185fd30815d1bf5f59.setContent(html_40026e4c32daec52c6aa07e4561a0d76);
+            
+        
+
+        marker_e0c5275a866a86e55f6f3ec0c71bcdfb.bindPopup(popup_d343c3da890c47185fd30815d1bf5f59)
+        ;
+
+        
+    
+    
+            var marker_bc394e9199dba3577d199e3153f956d7 = L.marker(
+                [48.8443221, 2.3748736],
+                {}
+            ).addTo(map_c6f47aa8f8b74ac63b6ee1a466202fc2);
+        
+    
+        var popup_b279f1ca7867485dcde5189191916b45 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_f7d7b300db69434c7c4325870f9c5a1a = $(`<div id="html_f7d7b300db69434c7c4325870f9c5a1a" style="width: 100.0%; height: 100.0%;">Stop ID: 2<br>Name: Gare de Lyon<br>Zone Type: Commercial</div>`)[0];
+                popup_b279f1ca7867485dcde5189191916b45.setContent(html_f7d7b300db69434c7c4325870f9c5a1a);
+            
+        
+
+        marker_bc394e9199dba3577d199e3153f956d7.bindPopup(popup_b279f1ca7867485dcde5189191916b45)
+        ;
+
+        
+    
+    
+            var marker_e7f62f8f7fb11eeb6a8a9f684b5b1032 = L.marker(
+                [48.853, 2.3691],
+                {}
+            ).addTo(map_c6f47aa8f8b74ac63b6ee1a466202fc2);
+        
+    
+        var popup_af25feacc96567c2a5757ce08147468b = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_7ac7b85710078813d00a7e16f2366a13 = $(`<div id="html_7ac7b85710078813d00a7e16f2366a13" style="width: 100.0%; height: 100.0%;">Stop ID: 3<br>Name: Bastille<br>Zone Type: Industrial</div>`)[0];
+                popup_af25feacc96567c2a5757ce08147468b.setContent(html_7ac7b85710078813d00a7e16f2366a13);
+            
+        
+
+        marker_e7f62f8f7fb11eeb6a8a9f684b5b1032.bindPopup(popup_af25feacc96567c2a5757ce08147468b)
+        ;
+
+        
+    
+    
+            var marker_22fbeddf210a3b3a0ebba3c3d8fd7f4a = L.marker(
+                [48.8470364, 2.3955517],
+                {}
+            ).addTo(map_c6f47aa8f8b74ac63b6ee1a466202fc2);
+        
+    
+        var popup_62cc6a16486f1205812f15d90aa419b5 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_838b3b2b105f64cf5fee3b7a687f0840 = $(`<div id="html_838b3b2b105f64cf5fee3b7a687f0840" style="width: 100.0%; height: 100.0%;">Stop ID: 4<br>Name: Nation<br>Zone Type: Residential</div>`)[0];
+                popup_62cc6a16486f1205812f15d90aa419b5.setContent(html_838b3b2b105f64cf5fee3b7a687f0840);
+            
+        
+
+        marker_22fbeddf210a3b3a0ebba3c3d8fd7f4a.bindPopup(popup_62cc6a16486f1205812f15d90aa419b5)
+        ;
+
+        
+    
+    
+            var marker_b9d9db19bb667e8c9b68ff1962ade087 = L.marker(
+                [48.87093, 2.3325],
+                {}
+            ).addTo(map_c6f47aa8f8b74ac63b6ee1a466202fc2);
+        
+    
+        var popup_98b2c2c1538d2e37415ac0affd3c2ef3 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_738194e08a2a8226348032f98f03e242 = $(`<div id="html_738194e08a2a8226348032f98f03e242" style="width: 100.0%; height: 100.0%;">Stop ID: 5<br>Name: Opera<br>Zone Type: Industrial</div>`)[0];
+                popup_98b2c2c1538d2e37415ac0affd3c2ef3.setContent(html_738194e08a2a8226348032f98f03e242);
+            
+        
+
+        marker_b9d9db19bb667e8c9b68ff1962ade087.bindPopup(popup_98b2c2c1538d2e37415ac0affd3c2ef3)
+        ;
+
+        
+    
+    
+            var marker_4486df7237cd9bb6fc81703e5e8929db = L.marker(
+                [48.867653, 2.363378],
+                {}
+            ).addTo(map_c6f47aa8f8b74ac63b6ee1a466202fc2);
+        
+    
+        var popup_7c2ca1ed7a09d547dcc5d53325fcdcfd = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_781340eae3e36a3626103ddb5a574301 = $(`<div id="html_781340eae3e36a3626103ddb5a574301" style="width: 100.0%; height: 100.0%;">Stop ID: 6<br>Name: Republique<br>Zone Type: Commercial</div>`)[0];
+                popup_7c2ca1ed7a09d547dcc5d53325fcdcfd.setContent(html_781340eae3e36a3626103ddb5a574301);
+            
+        
+
+        marker_4486df7237cd9bb6fc81703e5e8929db.bindPopup(popup_7c2ca1ed7a09d547dcc5d53325fcdcfd)
+        ;
+
+        
+    
+    
+            var marker_b66b8221e6428f8d816342130bbefac4 = L.marker(
+                [48.84216, 2.321732],
+                {}
+            ).addTo(map_c6f47aa8f8b74ac63b6ee1a466202fc2);
+        
+    
+        var popup_2b161e10903b9a520c4660cca99f04f7 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_adf90f7feb9da959ab353f61ac3c9780 = $(`<div id="html_adf90f7feb9da959ab353f61ac3c9780" style="width: 100.0%; height: 100.0%;">Stop ID: 7<br>Name: Montparnasse<br>Zone Type: Residential</div>`)[0];
+                popup_2b161e10903b9a520c4660cca99f04f7.setContent(html_adf90f7feb9da959ab353f61ac3c9780);
+            
+        
+
+        marker_b66b8221e6428f8d816342130bbefac4.bindPopup(popup_2b161e10903b9a520c4660cca99f04f7)
+        ;
+
+        
+    
+    
+            var marker_08caf579743bde9591bb2e542acd0121 = L.marker(
+                [48.891342, 2.237151],
+                {}
+            ).addTo(map_c6f47aa8f8b74ac63b6ee1a466202fc2);
+        
+    
+        var popup_124da3e012c0dc682ff56f93ca1869be = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_b9221e92c4c032ee9968cc52804447f6 = $(`<div id="html_b9221e92c4c032ee9968cc52804447f6" style="width: 100.0%; height: 100.0%;">Stop ID: 8<br>Name: La Defense<br>Zone Type: Mixed</div>`)[0];
+                popup_124da3e012c0dc682ff56f93ca1869be.setContent(html_b9221e92c4c032ee9968cc52804447f6);
+            
+        
+
+        marker_08caf579743bde9591bb2e542acd0121.bindPopup(popup_124da3e012c0dc682ff56f93ca1869be)
+        ;
+
+        
+    
+    
+            var marker_8c02608c5756d97204ae748810d3d331 = L.marker(
+                [48.87561, 2.325482],
+                {}
+            ).addTo(map_c6f47aa8f8b74ac63b6ee1a466202fc2);
+        
+    
+        var popup_4081f3a6dfec9daeb2114d46931e530c = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_3729af2f582975bd6e793d2d0850bbc0 = $(`<div id="html_3729af2f582975bd6e793d2d0850bbc0" style="width: 100.0%; height: 100.0%;">Stop ID: 9<br>Name: Saint-Lazare<br>Zone Type: Commercial</div>`)[0];
+                popup_4081f3a6dfec9daeb2114d46931e530c.setContent(html_3729af2f582975bd6e793d2d0850bbc0);
+            
+        
+
+        marker_8c02608c5756d97204ae748810d3d331.bindPopup(popup_4081f3a6dfec9daeb2114d46931e530c)
+        ;
+
+        
+    
+</script>
+</html>

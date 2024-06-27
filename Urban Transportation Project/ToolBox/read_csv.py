@@ -8,7 +8,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
 sys.path.append(project_root)
 
-from ToolBox.zonetype import ZoneType
+from ToolBox.transportstop import ZoneType
 from ToolBox.transportstop import TransportStop
 
 def read_stops_from_csv(file_path):
