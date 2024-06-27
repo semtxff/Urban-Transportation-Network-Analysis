@@ -1,6 +1,7 @@
 import os
 import sys
 import pandas as pd
+import csv
 # 获取当前脚本文件的目录
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -32,3 +33,18 @@ def read_stops_from_csv(file_path):
 # File path
 csv_file_path = "urban_transport_network_stops.csv"
 transport_stops = read_stops_from_csv(csv_file_path)
+
+def read_csv_file(filename):
+    try:
+        with open(filename, 'r') as file:
+            reader = csv.reader(file)
+            header = next(reader)  # Skip the header row
+            data = [tuple(map(float, row)) for row in reader]
+            return data
+    except FileNotFoundError:
+        print(f"File '{filename}' does not exist.")
+        return None
+
+filename = "urban_transport_network_routes.csv"
+route_data = read_csv_file(filename)
+
