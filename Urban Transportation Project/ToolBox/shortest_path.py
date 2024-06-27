@@ -1,38 +1,50 @@
-import csv
-from collections import defaultdict
+import networkx as nx
+import matplotlib.pyplot as plt
+import pandas as pd
 
-def read_csv(filename):
-    data = defaultdict(dict)
-    with open(filename, 'r') as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:
-            start_stop = int(row.get('start', 0))  # Use .get() to handle missing keys
-            end_stop = int(row.get('end', 0))
-            distance = float(row.get('dist', 0))
-            data[start_stop][end_stop] = distance
-            data[end_stop][start_stop] = distance  # Add the reverse edge for an undirected graph
-    return data
+node_labels = {
+    1: "Chatelet",
+    2: "Gare de Lyon",
+    3: "Bastille",
+    4: "Nation",
+    5: "Opera",
+    6: "Republique",
+    7: "Montparnasse",
+    8: "La Defense",
+    9: "Saint-Lazare"
+}
 
-def dijkstra(graph, start):
-    distances = {node: float('inf') for node in graph}
-    distances[start] = 0
-    visited = set()
+# 读取站点数据
+stops_df = pd.read_csv("urban_transport_network_stops.csv")
 
-    while len(visited) < len(graph):
-        current_node = min((node for node in graph if node not in visited), key=distances.get)
-        visited.add(current_node)
+# 读取路线数据
+routes_df = pd.read_csv("urban_transport_network_routes.csv")
 
-        for neighbor, weight in graph[current_node].items():
-            if distances[current_node] + weight < distances[neighbor]:
-                distances[neighbor] = distances[current_node] + weight
+# 创建有向图
+G = nx.DiGraph()
 
-    return distances
+# 添加站点和边
+for _, row in stops_df.iterrows():
+    G.add_node(row['stop_id'], pos=(row['longitude'], row['latitude']))
 
-if __name__ == '__main__':
-    stops_graph = read_csv('urban_transport_network_stops.csv')
-    start_node = 1  # Assume the starting point is stop 1
-    shortest_distances = dijkstra(stops_graph, start_node)
+for _, row in routes_df.iterrows():
+    G.add_edge(row['start_stop_id'], row['end_stop_id'], weight=row['distance'])
 
-    # Print the shortest distances
-    for end_node, distance in shortest_distances.items():
-        print(f"从站点 {start_node} 到站点 {end_node} 的最短距离为 {distance:.2f} 单位（如米或千米）。")
+# 计算最短路径
+shortest_paths = nx.single_source_dijkstra_path_length(G, source=1, weight='weight')
+
+# 打印从起点站到其他站点的最短路径
+for target, distance in shortest_paths.items():
+    print(f"从Chatelet (1) 到 {node_labels.get(target, target)} 的最短路径：{distance:.2f} 公里")
+
+# 获取从 Chatelet (1) 到每个节点的最短路径
+for target, path in nx.single_source_dijkstra_path(G, source=1, weight='weight').items():
+    print(f"从 Chatelet 到 {node_labels.get(target, target)} 的最短路径节点：", path)
+
+
+# 绘制有向图
+labels = {node: node_labels.get(node, node) for node in G.nodes()}
+pos = nx.get_node_attributes(G, 'pos')
+nx.draw(G, pos, with_labels=True, labels=labels, node_size=100, node_color="skyblue", font_size=10, font_color="black", font_weight="bold", arrows=True)
+plt.title("交通网络有向图")
+plt.show()
