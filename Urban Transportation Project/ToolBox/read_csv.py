@@ -2,10 +2,10 @@ import os
 import sys
 import pandas as pd
 import csv
-# 获取当前脚本文件的目录
+# Get the directory of the current script file(获取当前脚本文件的目录)
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-# 将上级目录（项目根目录）添加到系统路径中
+# Add the parent directory (project root directory) to the system path 将上级目录（项目根目录）添加到系统路径中
 project_root = os.path.dirname(current_dir)
 sys.path.append(project_root)
 
@@ -22,7 +22,7 @@ def read_stops_from_csv(file_path):
                 name=row['name'],
                 latitude=row['latitude'],
                 longitude=row['longitude'],
-                zone_type=ZoneType[row['zone_type'].upper()]  # Convert to uppercase and match enum value
+                zone_type=ZoneType[row['zone_type'].upper()]  # Convert to uppercase and match enum value# 转换为大写并匹配枚举值
             )
             stops.append(stop)
         return stops
@@ -34,10 +34,10 @@ def read_stops_from_csv(file_path):
 csv_file_path = "urban_transport_network_stops.csv"
 transport_stops = read_stops_from_csv(csv_file_path)
 
-# 创建一个空字典来存储数据
+# Create an empty dictionary to store data创建一个空字典来存储数据
 routes_data = {}
 
-# 读取CSV文件
+# Reading CSV Files读取CSV文件
 with open('urban_transport_network_routes.csv', 'r') as csvfile:
     reader = csv.reader(csvfile)
     next(reader)  

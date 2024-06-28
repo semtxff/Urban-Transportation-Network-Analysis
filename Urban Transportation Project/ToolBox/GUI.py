@@ -1,8 +1,9 @@
+import os
 import pandas as pd
 import networkx as nx
 import folium
-from PyQt5 import QtWidgets, QtWebEngineWidgets,QtCore
-from cv2 import threshold
+from PyQt5 import QtWidgets, QtWebEngineWidgets, QtCore
+
 # 加载数据
 stops_df = pd.read_csv('urban_transport_network_stops.csv', names=['start_stop_id', 'end_stop_id', 'distance'])
 routes_df = pd.read_csv('urban_transport_network_routes.csv', names=['stop_id', 'name', 'latitude', 'longitude', 'zone_type'])
@@ -55,12 +56,26 @@ class TransportNetworkGUI(QtWidgets.QMainWindow):
         
     def show_map(self):
         # 将地图保存为HTML文件
-        self.map.save('map.html')
-        self.webView.setUrl(QtCore.QUrl.fromLocalFile('map.html'))
+        map_file = 'map.html'
+        self.map.save(map_file)
+        abs_path = os.path.abspath(map_file)
+        self.webView.setUrl(QtCore.QUrl.fromLocalFile(abs_path))
         
     def add_stop(self):
-        # 示例：添加站点的功能
-        pass
+        # 弹出对话框获取新站点信息
+        text, ok = QtWidgets.QInputDialog.getText(self, '添加站点', '输入格式: stop_id,name,latitude,longitude,zone_type')
+        if ok and text:
+            stop_info = text.split(',')
+            if len(stop_info) == 5:
+                stop_id, name, latitude, longitude, zone_type = stop_info
+                latitude, longitude = float(latitude), float(longitude)
+                
+                # 添加到图形
+                G.add_node(stop_id, name=name, pos=(latitude, longitude), zone_type=zone_type)
+                
+                # 在地图上添加新站点
+                folium.Marker([latitude, longitude], popup=name, tooltip=name).add_to(self.map)
+                self.show_map()
 
 app = QtWidgets.QApplication([])
 window = TransportNetworkGUI()
