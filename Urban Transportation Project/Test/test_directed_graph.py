@@ -3,9 +3,9 @@ import networkx as nx
 import pandas as pd
 from io import StringIO
 
-class TestTransportNetwork(unittest.TestCase):
+class test_directed_graph(unittest.TestCase):
     def setUp(self):
-        # 创建虚拟的CSV数据
+        
         self.stops_data = StringIO("""stop_id,longitude,latitude
 1,2.3522,48.8566
 2,2.3731,48.8442
@@ -32,14 +32,14 @@ class TestTransportNetwork(unittest.TestCase):
         self.node_labels = {1:"Chatelet", 2:"Gare de Lyon", 3:"Bastille", 4:"Nation", 5:"Opera", 6:"Republique", 7:"Montparnasse", 8:"La Defense", 9:"Saint-Lazare"}
 
     def test_network_graph(self):
-        # 读取数据
+        
         stops_df = pd.read_csv(self.stops_data)
         routes_df = pd.read_csv(self.routes_data)
 
-        # 创建有向图
+        
         G = nx.DiGraph()
 
-        # 添加节点和边
+        
         for _, row in stops_df.iterrows():
             G.add_node(row['stop_id'], pos=(row['longitude'], row['latitude']))
 
@@ -48,10 +48,10 @@ class TestTransportNetwork(unittest.TestCase):
 
         labels = {node: self.node_labels.get(node, node) for node in G.nodes()}
 
-        # 计算度中心性
+        
         degree_centrality = nx.degree_centrality(G)
 
-        # 找出中心度最高的站点
+        
         max_centrality = max(degree_centrality.values())
         most_central_node = [node for node, centrality in degree_centrality.items() if centrality == max_centrality]
         
