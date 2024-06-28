@@ -1,5 +1,4 @@
 from enum import Enum, auto
-import csv
 
 class ZoneType(Enum):
     RESIDENTIAL = auto()
@@ -27,24 +26,21 @@ class TransportStop:
     def __lt__(self, other):
         return self.stop_id < other.stop_id
     
-def read_transport_stops_from_csv(filename):
-    stops = []
-    with open(filename, 'r') as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:
-            try:
-                start_stop_id = int(row['start_stop_id'])
-                end_stop_id = row['end_stop_id']  
-                distance = float(row['distance'])  
-                
-                stops.append(stop)
-            except ValueError:
-                print(f"Error processing row: {row}")
-    return stops
-
-# Example usage:
-if __name__ == "__main__":
-    csv_filename = "urban_transport_network_routes.csv"
-    transport_stops = read_transport_stops_from_csv(csv_filename)
-    for stop in transport_stops:
-        print(stop)
+def read_stops_from_csv(file_path):
+    try:
+        import pandas as pd
+        data = pd.read_csv(file_path)
+        stops = []
+        for _, row in data.iterrows():
+            stop = TransportStop(
+                stop_id=row['stop_id'],
+                name=row['name'],
+                latitude=row['latitude'],
+                longitude=row['longitude'],
+                zone_type=ZoneType[row['zone_type'].upper()]  # Convert to uppercase and match enum value
+            )
+            stops.append(stop)
+        return stops
+    except FileNotFoundError:
+        print(f"File '{file_path}' not found.")
+        return []
