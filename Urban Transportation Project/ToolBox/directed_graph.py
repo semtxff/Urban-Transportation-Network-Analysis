@@ -2,17 +2,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import pandas as pd
 
-node_labels = {
-    1: "Chatelet",
-    2: "Gare de Lyon",
-    3: "Bastille",
-    4: "Nation",
-    5: "Opera",
-    6: "Republique",
-    7: "Montparnasse",
-    8: "La Defense",
-    9: "Saint-Lazare"
-}
+node_labels={1:"Chatelet",2:"Gare de Lyon",3:"Bastille",4:"Nation",5:"Opera",6:"Republique",7:"Montparnasse",8:"La Defense",9:"Saint-Lazare"}
 
 # Read latitude and longitude data from a CSV file
 stops_df = pd.read_csv("urban_transport_network_stops.csv")
@@ -37,3 +27,11 @@ pos = nx.get_node_attributes(G, 'pos')
 nx.draw(G, pos, with_labels=True, labels=labels, node_size=100, node_color="skyblue", font_size=10, font_color="black", font_weight="bold", arrows=True)
 plt.title("Transport Network Directed Graph")
 plt.show()
+
+# 计算每个节点的度中心性
+degree_centrality = nx.degree_centrality(G)
+
+# 找出中心度最高的站点
+max_centrality = max(degree_centrality.values())
+most_central_node = [node for node, centrality in degree_centrality.items() if centrality == max_centrality]
+print(f"中心度最高的站点是: {labels[most_central_node[0]]} (节点编号: {most_central_node[0]})")
