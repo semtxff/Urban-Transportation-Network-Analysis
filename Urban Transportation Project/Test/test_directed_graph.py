@@ -1,59 +1,62 @@
 import unittest
 import networkx as nx
 import pandas as pd
+from io import StringIO
 
-class test_directed_graph(unittest.TestCase):
+class TestTransportNetwork(unittest.TestCase):
     def setUp(self):
-    
-        self.node_labels = {
-            1: "Chatelet",
-            2: "Gare de Lyon",
-            3: "Bastille",
-            4: "Nation",
-            5: "Opera",
-            6: "Republique",
-            7: "Montparnasse",
-            8: "La Defense",
-            9: "Saint-Lazare"
-        }
+        # 创建虚拟的CSV数据
+        self.stops_data = StringIO("""stop_id,longitude,latitude
+1,2.3522,48.8566
+2,2.3731,48.8442
+3,2.3690,48.8530
+4,2.3925,48.8470
+5,2.3318,48.8686
+6,2.3625,48.8670
+7,2.3204,48.8422
+8,2.2374,48.8914
+9,2.3247,48.8765""")
+        
+        self.routes_data = StringIO("""start_stop_id,end_stop_id,distance
+1,2,3.5
+1,3,2.1
+2,4,4.0
+3,4,1.2
+4,5,2.8
+5,6,3.3
+6,7,4.1
+7,8,5.7
+8,9,6.2
+9,1,7.3""")
+        
+        self.node_labels = {1:"Chatelet", 2:"Gare de Lyon", 3:"Bastille", 4:"Nation", 5:"Opera", 6:"Republique", 7:"Montparnasse", 8:"La Defense", 9:"Saint-Lazare"}
 
-    
-        self.stops_df = pd.DataFrame({
-            'stop_id': [1, 2, 3, 4, 5, 6, 7, 8, 9],
-            'longitude': [2.3488, 2.373, 2.369, 2.393, 2.331, 2.363, 2.319, 2.237, 2.324],
-            'latitude': [48.853, 48.844, 48.853, 48.847, 48.870, 48.867, 48.839, 48.892, 48.875]
-        })
+    def test_network_graph(self):
+        # 读取数据
+        stops_df = pd.read_csv(self.stops_data)
+        routes_df = pd.read_csv(self.routes_data)
 
-        self.routes_df = pd.DataFrame({
-            'start_stop_id': [1, 1, 2, 3, 4, 5, 6, 7, 8],
-            'end_stop_id': [2, 5, 3, 4, 6, 6, 7, 8, 9],
-            'distance': [1.0, 2.5, 1.5, 1.0, 2.0, 1.2, 1.3, 3.0, 4.0]
-        })
+        # 创建有向图
+        G = nx.DiGraph()
 
-    
-        self.G = nx.DiGraph()
+        # 添加节点和边
+        for _, row in stops_df.iterrows():
+            G.add_node(row['stop_id'], pos=(row['longitude'], row['latitude']))
 
-    
-        for _, row in self.stops_df.iterrows():
-            self.G.add_node(row['stop_id'], pos=(row['longitude'], row['latitude']))
+        for _, row in routes_df.iterrows():
+            G.add_edge(row['start_stop_id'], row['end_stop_id'], weight=row['distance'])
 
-        for _, row in self.routes_df.iterrows():
-            self.G.add_edge(row['start_stop_id'], row['end_stop_id'], weight=row['distance'])
+        labels = {node: self.node_labels.get(node, node) for node in G.nodes()}
 
-    def test_nodes(self):
-        for _, row in self.stops_df.iterrows():
-            self.assertIn(row['stop_id'], self.G.nodes())
-            self.assertEqual(self.G.nodes[row['stop_id']]['pos'], (row['longitude'], row['latitude']))
+        # 计算度中心性
+        degree_centrality = nx.degree_centrality(G)
 
-    def test_edges(self):
-        for _, row in self.routes_df.iterrows():
-            self.assertIn((row['start_stop_id'], row['end_stop_id']), self.G.edges())
-            self.assertEqual(self.G.edges[row['start_stop_id'], row['end_stop_id']]['weight'], row['distance'])
-
-    def test_labels(self):
-        labels = {node: self.node_labels.get(node, node) for node in self.G.nodes()}
-        for node in self.G.nodes():
-            self.assertEqual(labels[node], self.node_labels.get(node, node))
+        # 找出中心度最高的站点
+        max_centrality = max(degree_centrality.values())
+        most_central_node = [node for node, centrality in degree_centrality.items() if centrality == max_centrality]
+        
+        self.assertEqual(labels[most_central_node[0]], "Chatelet")
+        self.assertEqual(most_central_node[0], 1)
 
 if __name__ == '__main__':
     unittest.main()
