@@ -1,6 +1,4 @@
 import networkx as nx
-import matplotlib.pyplot as plt
-import pandas as pd
 import os
 import sys
 
@@ -12,7 +10,6 @@ project_root = os.path.dirname(current_dir)
 sys.path.append(project_root)
 
 from ToolBox.directed_graph import G
-from ToolBox.directed_graph import labels
 from ToolBox.directed_graph import stops_df
 from ToolBox.directed_graph import routes_df
 
@@ -28,15 +25,6 @@ for _, row in stops_df.iterrows():
 # Add routes (edges) with distances and travel times as attributes
 for _, row in routes_df.iterrows():
     G.add_edge(row['start_stop_id'], row['end_stop_id'], distance=row['distance'], travel_time=row['travel_time'])
-
-
-# Calculate degree centrality
-degree_centrality = nx.degree_centrality(G)
-
-# Find the node with the highest centrality
-max_centrality = max(degree_centrality.values())
-most_central_node = [node for node, centrality in degree_centrality.items() if centrality == max_centrality]
-print(f"中心度最高的站点是: {labels[most_central_node[0]]} (节点编号: {most_central_node[0]})")
 
 # Function to calculate the efficiency of a path
 def calculate_efficiency(path, graph):
