@@ -11,7 +11,3 @@ def print_paths(all_paths, node_labels):
     for i, path in enumerate(all_paths, 1):
         path_labels = [node_labels[node] for node in path]
         print(f"Path {i}: {' -> '.join(path_labels)}")
-
-# 在其他代码中调用
-start_node = 1
-end_node = 3
