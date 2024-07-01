@@ -11,12 +11,11 @@ def find_routes_function():
     stops_df = load_stops_df()
     routes_df = load_routes_df()
     G = create_graph(stops_df, routes_df)
-    print()
     start_node = int(input("Please set start node:"))
     end_node = int(input("Please set end node:"))
+    print()
     all_paths = find_all_paths(G, start_node, end_node)
     node_labels = node_label()
-    print()
     print_paths(all_paths, node_labels)
 
 def route_effciency_function():
@@ -24,15 +23,22 @@ def route_effciency_function():
     from ToolBox.route_efficiency import shortest_path, create_and_configure_graph
     stops_df = load_stops_df()
     routes_df = load_routes_df()
-    print()
     create_and_configure_graph(stops_df,routes_df)
     shortest_path()
+
+def shortest_path():
+    from ToolBox.shortest_path import print_shortest_path
+    print_shortest_path()
 
 # 运行测试的函数
 def run_tests():
     plt_graph_function()
+    print()
     find_routes_function()
+    print()
     route_effciency_function()
+    print()
+    shortest_path()
     print()
     print("All tests passed!")
     print()
