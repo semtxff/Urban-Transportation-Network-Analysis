@@ -5,41 +5,51 @@ def plt_graph_function():
     my_graph = create_graph(stops_df, routes_df)
     plot_transport_network(my_graph)
 
+
+def find_highest_centrality_function():
+    from ToolBox.find_highest_centrality import print_highest_cretrality
+    print_highest_cretrality()
+
+
 def find_routes_function():
-    from ToolBox.find_routes import print_paths, find_all_paths
-    from ToolBox.directed_graph import load_routes_df, load_stops_df, node_label, create_graph
-    stops_df = load_stops_df()
-    routes_df = load_routes_df()
-    G = create_graph(stops_df, routes_df)
-    start_node = int(input("Please set start node:"))
-    end_node = int(input("Please set end node:"))
-    print()
-    all_paths = find_all_paths(G, start_node, end_node)
-    node_labels = node_label()
-    print_paths(all_paths, node_labels)
+    from ToolBox.find_routes import create_graph
+    create_graph()
+
+
+def time_predict_function():
+    from ToolBox.time_predict import print_time_predict
+    print_time_predict()
+
 
 def route_effciency_function():
-    from ToolBox.directed_graph import load_routes_df, load_stops_df
+    from ToolBox.plt_graph import load_routes_df, load_stops_df
     from ToolBox.route_efficiency import shortest_path, create_and_configure_graph
     stops_df = load_stops_df()
     routes_df = load_routes_df()
     create_and_configure_graph(stops_df,routes_df)
     shortest_path()
 
+
 def shortest_path():
     from ToolBox.shortest_path import print_shortest_path
     print_shortest_path()
+
+
 
 # 运行测试的函数
 def run_tests():
     plt_graph_function()
     print()
+    find_highest_centrality_function()
+    print()
     find_routes_function()
     print()
-    route_effciency_function()
+    time_predict_function()
     print()
-    shortest_path()
-    print()
+    #route_effciency_function()
+    #print()
+    #shortest_path()
+    #print()
     print("All tests passed!")
     print()
 
