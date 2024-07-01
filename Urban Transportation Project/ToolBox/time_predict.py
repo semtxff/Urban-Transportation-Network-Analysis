@@ -1,67 +1,93 @@
 import os
 import sys
 
-# 获取当前脚本文件的目录
+# Get the directory of the current script file(获取当前脚本文件的目录)
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-# 将上级目录（项目根目录）添加到系统路径中
+# Add the parent directory (project root directory) to the system path 将上级目录（项目根目录）添加到系统路径中
 project_root = os.path.dirname(current_dir)
 sys.path.append(project_root)
 
-from ToolBox.plt_graph import stops_df
-from ToolBox.plt_graph import G
+from ToolBox.plt_graph import stops_df, routes_df
 
-# 估计停车时间
-zone_type_times = {
-    'Residential': 2,
-    'Commercial': 4,
-    'Industrial': 3,
-    'Mixed': 3
-}
+def create_graph(stops_df, routes_df):
+    graph = {}
+    
+    for _, row in stops_df.iterrows():
+        stop_id = row['stop_id']
+        graph[stop_id] = {'pos': (row['longitude'], row['latitude']), 'name': row['name'], 'zone_type': row['zone_type'], 'out_degree': 0, 'in_degree': 0}
+    
+    for _, row in routes_df.iterrows():
+        start_stop_id = row['start_stop_id']
+        end_stop_id = row['end_stop_id']
+        distance = row['distance']
+        
+        if start_stop_id not in graph:
+            graph[start_stop_id] = {'pos': (0, 0), 'name': '', 'zone_type': '', 'out_degree': 0, 'in_degree': 0}
+        if end_stop_id not in graph:
+            graph[end_stop_id] = {'pos': (0, 0), 'name': '', 'zone_type': '', 'out_degree': 0, 'in_degree': 0}
+        
+        if 'edges' not in graph[start_stop_id]:
+            graph[start_stop_id]['edges'] = {}
+        graph[start_stop_id]['edges'][end_stop_id] = distance
+        graph[start_stop_id]['out_degree'] += 1
+        graph[end_stop_id]['in_degree'] += 1
+    
+    return graph
 
-def estimate_travel_time(route):
-    total_time = 0
-    for stop_id in route:
-        zone_type = stops_df.loc[stops_df['stop_id'] == stop_id, 'zone_type'].values[0]
-        total_time += zone_type_times.get(zone_type, 0)
-    return total_time
+def calculate_travel_time(distance, start_zone, end_zone):
+    # Define stop times based on zone_type
+    stop_times = {
+        'Residential': 2,
+        'Commercial': 4,
+        'Industrial': 3,
+        'Mixed': 3
+    }
+    
+    average_speed = 40.0  # km/h
+    travel_time = distance / average_speed * 60  # convert to minutes
+    start_stop_time = stop_times.get(start_zone, 0)
+    end_stop_time = stop_times.get(end_zone, 0)
+    
+    return travel_time + start_stop_time + end_stop_time
 
-# 计算最短路径
-def shortest_path(source, target):
-    visited = set()
-    distances = {stop_id: float('inf') for stop_id in G}
-    distances[source] = 0
-    prev = {}
+def find_all_paths(graph, start, end, path=[]):
+    path = path + [start]
+    if start == end:
+        return [path]
+    if start not in graph:
+        return []
+    paths = []
+    for node in graph[start].get('edges', {}):
+        if node not in path:
+            new_paths = find_all_paths(graph, node, end, path)
+            for p in new_paths:
+                paths.append(p)
+    return paths
 
-    while len(visited) < len(G):
-        current = min((stop_id for stop_id in G if stop_id not in visited), key=distances.get)
-        visited.add(current)
+def calculate_paths_travel_time(graph, paths):
+    paths_travel_time = []
+    for path in paths:
+        total_travel_time = 0
+        for i in range(len(path) - 1):
+            start = path[i]
+            end = path[i + 1]
+            distance = graph[start]['edges'][end]
+            start_zone = graph[start]['zone_type']
+            end_zone = graph[end]['zone_type']
+            travel_time = calculate_travel_time(distance, start_zone, end_zone)
+            total_travel_time += travel_time
+        paths_travel_time.append((path, total_travel_time))
+    return paths_travel_time
 
-        for neighbor, edge_info in G[current].items():
-            if isinstance(edge_info, (int, float)):
-                distance = edge_info
-            elif isinstance(edge_info, dict) and 'distance' in edge_info:
-                distance = edge_info['distance']
-            else:
-                continue  # 跳过非边信息
 
-            if neighbor not in visited:
-                new_distance = distances[current] + distance
-                if new_distance < distances[neighbor]:
-                    distances[neighbor] = new_distance
-                    prev[neighbor] = current
+def print_time_predict():
+    # Find all paths and calculate their travel times
+    from ToolBox.find_routes import start_node, end_node
 
-    path = []
-    node = target
-    while node != source:
-        path.append(node)
-        node = prev.get(node, source)
-    path.append(source)
-    path.reverse()
+    all_paths = find_all_paths(G, start_node, end_node)
+    paths_travel_times = calculate_paths_travel_time(G, all_paths)
+    for path, travel_time in paths_travel_times:
+        print(f"Path: {' -> '.join(map(str, path))}, Travel time: {travel_time:.2f} minutes")
 
-    travel_time = estimate_travel_time(path)
-    print(f"Shortest path from {source} to {target}: {path}")
-    print(f"Estimated travel time: {travel_time} minutes")
-
-# 示例：计算从1到6的最短路径
-shortest_path(1, 6)
+G = create_graph(stops_df, routes_df)

@@ -1,13 +1,47 @@
-import networkx as nx
+import os
+import sys
+# Get the directory of the current script file(获取当前脚本文件的目录)
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
-def find_all_paths(G, start_node, end_node):
-    # 查找所有从start_node到end_node的路径
-    all_paths = list(nx.all_simple_paths(G, source=start_node, target=end_node))
-    return all_paths
+# Add the parent directory (project root directory) to the system path 将上级目录（项目根目录）添加到系统路径中
+project_root = os.path.dirname(current_dir)
+sys.path.append(project_root)
 
-def print_paths(all_paths, node_labels):
-    # 输出路径信息
-    print(f"All path information from Chatelet to Bastille:")
-    for i, path in enumerate(all_paths, 1):
-        path_labels = [node_labels[node] for node in path]
-        print(f"Path {i}: {' -> '.join(path_labels)}")
+from ToolBox.plt_graph import routes_df
+
+def dfs(graph, start, end, visited, path):
+    visited[start] = True
+    path.append(start)
+
+    if start == end:
+        print("Route:", path)
+    else:
+        for neighbor in graph.get(start, []):
+            if not visited[neighbor]:
+                dfs(graph, neighbor, end, visited, path)
+
+    path.pop()
+    visited[start] = False
+
+# 创建有向图
+def create_graph():   
+    graph = {}
+
+    for _, row in routes_df.iterrows():
+        start_stop_id = row['start_stop_id']
+        end_stop_id = row['end_stop_id']
+
+        if start_stop_id not in graph:
+            graph[start_stop_id] = []
+        graph[start_stop_id].append(end_stop_id)
+
+    # 初始化访问标记和路径
+    visited = {node: False for node in graph}
+    path = []
+
+    # 查找所有可能的路线 
+    dfs(graph, start_node, end_node, visited, path)
+
+start_node = int(input("Please set start node:"))
+end_node = int(input("Please set end node:"))
+print()
