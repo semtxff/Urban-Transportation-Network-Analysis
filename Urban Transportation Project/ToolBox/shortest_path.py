@@ -1,6 +1,5 @@
 import os
 import sys
-import networkx as nx
 # Get the directory of the current script file(获取当前脚本文件的目录)
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
