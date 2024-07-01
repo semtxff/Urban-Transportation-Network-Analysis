@@ -1,13 +1,9 @@
-def directed_graph_function():
-    from ToolBox.directed_graph import draw_graph, load_stops_df, load_routes_df, create_graph, node_label, find_most_central_node
-    # 使用 draw_graph 函数
-    stops_df = load_stops_df()
-    routes_df = load_routes_df()
-    G = create_graph(stops_df, routes_df)
-    labels = node_label()
-    draw_graph(G, labels)
-    print()
-    find_most_central_node(G, labels)
+def plt_graph_function():
+    from ToolBox.plt_graph import plot_transport_network, create_graph, load_routes_df, load_stops_df
+    stops_df = load_stops_df("urban_transport_network_stops.csv")
+    routes_df = load_routes_df("urban_transport_network_routes.csv")
+    my_graph = create_graph(stops_df, routes_df)
+    plot_transport_network(my_graph)
 
 def find_routes_function():
     from ToolBox.find_routes import print_paths, find_all_paths
@@ -34,7 +30,7 @@ def route_effciency_function():
 
 # 运行测试的函数
 def run_tests():
-    directed_graph_function()
+    plt_graph_function()
     find_routes_function()
     route_effciency_function()
     print()
