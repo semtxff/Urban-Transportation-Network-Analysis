@@ -7,7 +7,6 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
 sys.path.append(project_root)
 
-from ToolBox.directed_graph import stops_df
 from ToolBox.directed_graph import G
 
 def dijkstra(graph, start_node, end_node):
@@ -44,14 +43,8 @@ def dijkstra(graph, start_node, end_node):
 
     return path, distances[end_node]
 
-
-# 设置起点和终点
-start_node = 1  # Chatelet
-end_node = 3    # Saint-Lazare
-
-# 调用Dijkstra算法
-shortest_path, shortest_distance = dijkstra(G, start_node, end_node)
-
-# 输出结果
-print(f"最短路径为：{shortest_path}，总距离为：{shortest_distance:.2f} km")
-
+def print_shortest_path():
+    start_node = int(input("Please set start node:"))
+    end_node = int(input("Please set end node:"))
+    shortest_path, shortest_distance = dijkstra(G, start_node, end_node)
+    print(f"最短路径为：{shortest_path}，总距离为：{shortest_distance:.2f} km")
