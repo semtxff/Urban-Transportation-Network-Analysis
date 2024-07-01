@@ -22,7 +22,8 @@ def calculate_efficiency(path, graph):
         total_travel_time += edge_data['travel_time']
     if total_travel_time == 0:
         return float('inf')  # Avoid division by zero
-    return total_distance / total_travel_time
+    calculate_result = '{:.2f}'.format(total_distance / total_travel_time)
+    return calculate_result
 
 # Find the shortest path based on distance
 def shortest_path():
@@ -42,6 +43,7 @@ def shortest_path():
         print("The shortest path by travel time is the most efficient.")
 
 # 在其他代码中调用
-start_node = 1
-end_node = 3
 G = nx.DiGraph()
+print()
+start_node = int(input("Please set start node:"))
+end_node = int(input("Please set end node:"))
