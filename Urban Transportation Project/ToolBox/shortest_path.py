@@ -1,23 +1,58 @@
-import networkx as nx
 import os
 import sys
-
-# 获取当前脚本文件的目录
+import networkx as nx
+# Get the directory of the current script file(获取当前脚本文件的目录)
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-# 将上级目录（项目根目录）添加到系统路径中
+# Add the parent directory (project root directory) to the system path 将上级目录（项目根目录）添加到系统路径中
 project_root = os.path.dirname(current_dir)
 sys.path.append(project_root)
 
-from directed_graph import node_labels
-from directed_graph import G
+from ToolBox.directed_graph import stops_df
+from ToolBox.directed_graph import G
 
-# 计算最短路径
-shortest_paths = nx.single_source_dijkstra_path_length(G, source=1, weight='weight')
-# 打印从起点站到其他站点的最短路径
-for target, distance in shortest_paths.items():
-    print(f"从Chatelet (1) 到 {node_labels.get(target, target)} 的最短路径：{distance:.2f} 公里")
+def dijkstra(graph, start_node, end_node):
+    # 初始化距离字典，将起点到各个节点的距离设为无穷大
+    distances = {node: float('inf') for node in graph.nodes()}
+    distances[start_node] = 0
 
-# 获取从 Chatelet (1) 到每个节点的最短路径
-for target, path in nx.single_source_dijkstra_path(G, source=1, weight='weight').items():
-    print(f"从 Chatelet 到 {node_labels.get(target, target)} 的最短路径节点：", path)
+    # 初始化前驱节点字典
+    previous_nodes = {node: None for node in graph.nodes()}
+
+    # 初始化已访问节点集合
+    visited = set()
+
+    while len(visited) < len(graph.nodes()):
+        # 选择距离最小的未访问节点
+        current_node = min((node for node in graph.nodes() if node not in visited), key=distances.get)
+        visited.add(current_node)
+
+        # 更新邻接节点的距离
+        for neighbor, data in graph[current_node].items():
+            weight = data['weight']
+            new_distance = distances[current_node] + weight
+            if new_distance < distances[neighbor]:
+                distances[neighbor] = new_distance
+                previous_nodes[neighbor] = current_node
+
+    # 构建最短路径
+    path = []
+    current = end_node
+    while current is not None:
+        path.append(current)
+        current = previous_nodes[current]
+    path.reverse()
+
+    return path, distances[end_node]
+
+
+# 设置起点和终点
+start_node = 1  # Chatelet
+end_node = 3    # Saint-Lazare
+
+# 调用Dijkstra算法
+shortest_path, shortest_distance = dijkstra(G, start_node, end_node)
+
+# 输出结果
+print(f"最短路径为：{shortest_path}，总距离为：{shortest_distance:.2f} km")
+
