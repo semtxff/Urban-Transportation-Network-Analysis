@@ -2,23 +2,33 @@ import networkx as nx
 import os
 import sys
 
-# Get the directory of the current script file(获取当前脚本文件的目录)
-current_dir = os.path.dirname(os.path.abspath(__file__))
 
-# Add the parent directory (project root directory) to the system path(将上级目录（项目根目录）添加到系统路径中)
-project_root = os.path.dirname(current_dir)
-sys.path.append(project_root)
+def node_label():
+    node_labels = {
+        1: "Chatelet",
+        2: "Gare de Lyon",
+        3: "Bastille",
+        4: "Nation",
+        5: "Opera",
+        6: "Republique",
+        7: "Montparnasse",
+        8: "La Defense",
+        9: "Saint-Lazare"
+    }
+    return node_labels
 
-from directed_graph import node_labels
-from directed_graph import G
+def find_all_paths(G, start_node, end_node):
+    # 查找所有从start_node到end_node的路径
+    all_paths = list(nx.all_simple_paths(G, source=start_node, target=end_node))
+    return all_paths
 
-# Find all routes from Chatelet to Bastille(查找所有从Chatelet到Bastille的路径)
-start_node = 1  # Chatelet ID
-end_node = 3    # Bastille ID
-all_paths = list(nx.all_simple_paths(G, source=start_node, target=end_node))
-
-# output输出路径信息
-print(f"All path information from Chatelet to Bastille：")
-for i, path in enumerate(all_paths, 1):
-    path_labels = [node_labels[node] for node in path]
-    print(f"Path {i}: {' -> '.join(path_labels)}")
+def print_paths(all_paths, node_labels):
+    # 输出路径信息
+    print(f"All path information from Chatelet to Bastille：")
+    for i, path in enumerate(all_paths, 1):
+        path_labels = [node_labels[node] for node in path]
+        print(f"Path {i}: {' -> '.join(path_labels)}")
+        
+# 在其他代码中调用
+start_node = 1
+end_node = 3
