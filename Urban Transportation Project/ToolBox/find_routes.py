@@ -7,7 +7,7 @@ def find_all_paths(G, start_node, end_node):
 
 def print_paths(all_paths, node_labels):
     # 输出路径信息
-    print(f"All path information from Chatelet to Bastille：")
+    print(f"All path information from Chatelet to Bastille:")
     for i, path in enumerate(all_paths, 1):
         path_labels = [node_labels[node] for node in path]
         print(f"Path {i}: {' -> '.join(path_labels)}")
