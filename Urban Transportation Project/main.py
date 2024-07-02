@@ -21,18 +21,14 @@ def time_predict_function():
     print_time_predict()
 
 
-def route_effciency_function():
-    from ToolBox.plt_graph import load_routes_df, load_stops_df
-    from ToolBox.route_efficiency import shortest_path, create_and_configure_graph
-    stops_df = load_stops_df()
-    routes_df = load_routes_df()
-    create_and_configure_graph(stops_df,routes_df)
-    shortest_path()
-
-
-def shortest_path():
+def shortest_path_function():
     from ToolBox.shortest_path import print_shortest_path
     print_shortest_path()
+
+
+def route_effciency_function():
+    from ToolBox.route_efficiency import route_efficiency_analysis
+    route_efficiency_analysis()
 
 
 
@@ -46,10 +42,10 @@ def run_tests():
     print()
     time_predict_function()
     print()
-    #route_effciency_function()
-    #print()
-    #shortest_path()
-    #print()
+    shortest_path_function()
+    print()
+    route_effciency_function()
+    print()
     print("All tests passed!")
     print()
 
