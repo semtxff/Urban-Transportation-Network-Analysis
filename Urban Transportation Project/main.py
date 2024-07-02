@@ -31,6 +31,17 @@ def route_effciency_function():
     route_efficiency_analysis()
 
 
+def Interactive_Site_Map_function():
+    from ToolBox.Interactive_Site_Map import add_map
+    add_map()
+
+
+def Bus_Stop_Utilization_Analysis_function():
+    from ToolBox.Bus_Stop_Utilization_Analysis import print_underutilized_stops, print_recommended_stops
+    print_underutilized_stops()
+    print_recommended_stops()
+
+
 
 # 运行测试的函数
 def run_tests():
@@ -45,6 +56,10 @@ def run_tests():
     shortest_path_function()
     print()
     route_effciency_function()
+    print()
+    Interactive_Site_Map_function()
+    print()
+    Bus_Stop_Utilization_Analysis_function()
     print()
     print("All tests passed!")
     print()
