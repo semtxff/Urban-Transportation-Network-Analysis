@@ -43,7 +43,6 @@ def find_routes(start_node, end_node):
 class test_find_routes(unittest.TestCase):
     
     def setUp(self):
-        # Mock input for start_node and end_node
         self.start_node = 1
         self.end_node = 2
 
@@ -56,7 +55,6 @@ class test_find_routes(unittest.TestCase):
         self.assertIn(expected_output, output)
     
     def test_find_routes_functionality(self):
-        # Test additional functionalities here if needed
         pass
 
 if __name__ == '__main__':
