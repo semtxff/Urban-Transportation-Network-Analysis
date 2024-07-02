@@ -9,7 +9,7 @@ sys.path.append(project_root)
 
 from ToolBox.route_efficiency import create_graph, calculate_travel_time, find_all_paths, calculate_paths_travel_time, dijkstra, create_weighted_graph, calculate_efficiency
 
-class TestRouteFunctions(unittest.TestCase):
+class test_route_efficiency(unittest.TestCase):
     
     def setUp(self):
         self.stops_df = pd.DataFrame({
