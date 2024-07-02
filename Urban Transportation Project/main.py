@@ -36,6 +36,15 @@ def Interactive_Site_Map_function():
     add_map()
 
 
+def Peak_Hours_Traffic_Analysis_function():
+    from ToolBox.plt_graph import stops_df, routes_df
+    from ToolBox.Peak_Hours_Traffic_Analysis import print_peak_hour_route_between_stops, create_graph, analyze_peak_hours_traffic
+    from ToolBox.find_routes import start_node, end_node
+    G = create_graph(stops_df, routes_df)
+    optimized_routes_df = analyze_peak_hours_traffic(routes_df)
+    print_peak_hour_route_between_stops(G, optimized_routes_df, start_node, end_node)
+
+
 def Bus_Stop_Utilization_Analysis_function():
     from ToolBox.Bus_Stop_Utilization_Analysis import print_underutilized_stops, print_recommended_stops
     print_underutilized_stops()
@@ -47,18 +56,28 @@ def Bus_Stop_Utilization_Analysis_function():
 def run_tests():
     plt_graph_function()
     print()
+    print("find highest centrality function:")
     find_highest_centrality_function()
     print()
+    print("find routes function:")
     find_routes_function()
     print()
+    print("time predict function:")
     time_predict_function()
     print()
+    print("shortest path function:")
     shortest_path_function()
     print()
+    print("route effciency function:")
     route_effciency_function()
     print()
+    print("Interactive Site Map function:")
     Interactive_Site_Map_function()
     print()
+    print("Peak Hours Traffic Analysis function:")
+    Peak_Hours_Traffic_Analysis_function()
+    print()
+    print("Bus Stop Utilization Analysis function:")
     Bus_Stop_Utilization_Analysis_function()
     print()
     print("All tests passed!")
