@@ -8,6 +8,7 @@ project_root = os.path.dirname(current_dir)
 sys.path.append(project_root)
 
 from ToolBox.plt_graph import routes_df
+from tkinter import simpledialog
 
 def dfs(graph, start, end, visited, path):
     visited[start] = True
@@ -42,6 +43,5 @@ def create_graph():
     # 查找所有可能的路线 
     dfs(graph, start_node, end_node, visited, path)
 
-start_node = int(input("Please set start node:"))
-end_node = int(input("Please set end node:"))
-print()
+start_node = int(simpledialog.askstring("输入", "请输入起点站 (start node):"))
+end_node = int(simpledialog.askstring("输入", "请输入终点站 (end node):"))
