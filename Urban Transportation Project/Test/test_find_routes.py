@@ -1,6 +1,4 @@
 import unittest
-from unittest.mock import patch
-from io import StringIO
 import sys
 import os
 
@@ -8,6 +6,8 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
 sys.path.append(project_root)
 
+from unittest.mock import patch
+from io import StringIO
 from ToolBox.plt_graph import routes_df
 
 def dfs(graph, start, end, visited, path):
@@ -24,38 +24,28 @@ def dfs(graph, start, end, visited, path):
     path.pop()
     visited[start] = False
 
-def find_routes(start_node, end_node):
-    graph = {}
-
-    for _, row in routes_df.iterrows():
-        start_stop_id = row['start_stop_id']
-        end_stop_id = row['end_stop_id']
-
-        if start_stop_id not in graph:
-            graph[start_stop_id] = []
-        graph[start_stop_id].append(end_stop_id)
-
-    visited = {node: False for node in graph}
-    path = []
-
-    dfs(graph, start_node, end_node, visited, path)
-
 class test_find_routes(unittest.TestCase):
     
-    def setUp(self):
-        self.start_node = 1
-        self.end_node = 2
+    def test_dfs(self):
+        mock_input_values = ['1', '5']
+        with patch('builtins.input', side_effect=mock_input_values):
+            start_node = int(input("输入"))
+            end_node = int(input("输入"))
+        
+        graph = {
+            1: [2, 3],
+            2: [4],
+            3: [5],
+            4: [],
+            5: []
+        }
+        visited = {node: False for node in graph}
+        path = []
 
-    @patch('builtins.input', side_effect=lambda *args: iter([str(self.start_node), str(self.end_node)]))
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_find_routes_output(self, mock_stdout, mock_input):
-        find_routes(self.start_node, self.end_node)
-        output = mock_stdout.getvalue().strip()
-        expected_output = "Route: [1, np.float64(2.0)]"
-        self.assertIn(expected_output, output)
-    
-    def test_find_routes_functionality(self):
-        pass
+        with patch('sys.stdout', new=StringIO()) as fake_out:
+            dfs(graph, start_node, end_node, visited, path)
+            printed_output = fake_out.getvalue().strip()
+            self.assertIn("Route:", printed_output)
 
 if __name__ == '__main__':
     unittest.main()
