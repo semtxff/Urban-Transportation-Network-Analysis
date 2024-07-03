@@ -31,31 +31,6 @@ def plt_graph_function():
     my_graph = create_graph(stops_df, routes_df)
     result = capture_print_output(plot_transport_network)(my_graph)
 
-def find_routes_function():
-    from ToolBox.find_routes import create_graph
-    result = capture_print_output(create_graph)()
-    messagebox.showinfo("结果", result)
-
-def find_highest_centrality_function():
-    from ToolBox.find_highest_centrality import print_highest_cretrality
-    result = capture_print_output(print_highest_cretrality)()
-    messagebox.showinfo("结果", result)
-
-def time_predict_function():
-    from ToolBox.time_predict import print_time_predict
-    result = capture_print_output(print_time_predict)()
-    messagebox.showinfo("结果", result)
-
-def shortest_path_function():
-    from ToolBox.shortest_path import print_shortest_path
-    result = capture_print_output(print_shortest_path)()
-    messagebox.showinfo("结果", result)
-
-def route_effciency_function():
-    from ToolBox.route_efficiency import route_efficiency_analysis
-    result = capture_print_output(route_efficiency_analysis)()
-    messagebox.showinfo("结果", result)
-
 def Interactive_Site_Map_function():
     class TransportNetworkGUI(QtWidgets.QMainWindow):
         def __init__(self):
@@ -194,6 +169,31 @@ def Interactive_Site_Map_function():
     
     result = capture_print_output(run_qt_app)()
     messagebox.showinfo("结果", "互动地图已启动")
+    
+def find_routes_function():
+    from ToolBox.find_routes import create_graph
+    result = capture_print_output(create_graph)()
+    messagebox.showinfo("结果", result)
+
+def find_highest_centrality_function():
+    from ToolBox.find_highest_centrality import print_highest_cretrality
+    result = capture_print_output(print_highest_cretrality)()
+    messagebox.showinfo("结果", result)
+
+def time_predict_function():
+    from ToolBox.time_predict import print_time_predict
+    result = capture_print_output(print_time_predict)()
+    messagebox.showinfo("结果", result)
+
+def shortest_path_function():
+    from ToolBox.shortest_path import print_shortest_path
+    result = capture_print_output(print_shortest_path)()
+    messagebox.showinfo("结果", result)
+
+def route_effciency_function():
+    from ToolBox.route_efficiency import route_efficiency_analysis
+    result = capture_print_output(route_efficiency_analysis)()
+    messagebox.showinfo("结果", result)
 
 def Peak_Hours_Traffic_Analysis_function():
     from ToolBox.plt_graph import load_routes_df, load_stops_df
@@ -218,12 +218,12 @@ def create_ui():
     root.title("交通网络分析工具")
     
     tk.Button(root, text="绘制交通网络图", command=plt_graph_function).pack(pady=10)
+    tk.Button(root, text="互动地图功能", command=Interactive_Site_Map_function).pack(pady=10)
     tk.Button(root, text="查找路线", command=find_routes_function).pack(pady=10)
     tk.Button(root, text="查找最高中心性", command=find_highest_centrality_function).pack(pady=10)
     tk.Button(root, text="时间预测", command=time_predict_function).pack(pady=10)
     tk.Button(root, text="最短路径计算", command=shortest_path_function).pack(pady=10)
     tk.Button(root, text="路线效率分析", command=route_effciency_function).pack(pady=10)
-    tk.Button(root, text="互动地图功能", command=Interactive_Site_Map_function).pack(pady=10)
     tk.Button(root, text="高峰时段交通分析", command=Peak_Hours_Traffic_Analysis_function).pack(pady=10)
     tk.Button(root, text="公交站点利用率分析", command=Bus_Stop_Utilization_Analysis_function).pack(pady=10)
     
