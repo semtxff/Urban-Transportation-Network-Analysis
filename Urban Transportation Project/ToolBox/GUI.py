@@ -4,10 +4,10 @@ import pandas as pd
 import folium
 from PyQt5 import QtWidgets, QtCore, QtWebEngineWidgets
 
-# Get the directory of the current script file(获取当前脚本文件的目录)
+# Get the directory of the current script file
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-# Add the parent directory (project root directory) to the system path 将上级目录（项目根目录）添加到系统路径中
+# Add the parent directory (project root directory) to the system path
 project_root = os.path.dirname(current_dir)
 sys.path.append(project_root)
 
@@ -138,12 +138,10 @@ class TrafficNetworkGUI(QtWidgets.QMainWindow):
         self.show_map()
     
     def find_and_draw_routes(self):
-
-        
         from ToolBox.find_routes import start_node, end_node
         self.start_node = int(start_node)
         self.end_node = int(end_node)
-
+        
         # Create graph from routes_df
         graph = self.create_graph()
         
@@ -158,7 +156,6 @@ class TrafficNetworkGUI(QtWidgets.QMainWindow):
         self.dfs_with_path(graph, self.start_node, self.end_node, visited, path)
         
         # Print route paths (for debugging)
-        print("Route Paths:", self.route_paths)
     
     def create_graph(self):   
         graph = {}
@@ -176,14 +173,12 @@ class TrafficNetworkGUI(QtWidgets.QMainWindow):
     def dfs_with_path(self, graph, start, end, visited, path):
         visited[start] = True
         path.append(start)
-        print(f"Visiting node: {start}, Path: {path}")
 
         if start == end:
             self.route_paths.append(path.copy())
-            print(f"Found path: {path}")
         else:
             for neighbor in graph.get(start, []):
-                if not visited.get(neighbor, False):  # Ensure neighbor is in visited keys
+                if not visited[neighbor]:
                     self.dfs_with_path(graph, neighbor, end, visited, path)
 
         path.pop()
@@ -213,6 +208,11 @@ class TrafficNetworkGUI(QtWidgets.QMainWindow):
                 end_lat = self.stops.get(str(end_id), {}).get('latitude', None)
                 end_lon = self.stops.get(str(end_id), {}).get('longitude', None)
                 if start_lat is not None and start_lon is not None and end_lat is not None and end_lon is not None:
+                    # Offset the start and end points slightly to avoid overlapping lines
+                    start_lat += 0.001 * idx
+                    start_lon += 0.001 * idx
+                    end_lat += 0.001 * idx
+                    end_lon += 0.001 * idx
                     folium.PolyLine(locations=[(start_lat, start_lon), (end_lat, end_lon)], color=color).add_to(self.map)
         
         # Show the updated map
