@@ -6,14 +6,30 @@ def plt_graph_function():
     plot_transport_network(my_graph)
 
 
-def find_highest_centrality_function():
-    from ToolBox.find_highest_centrality import print_highest_cretrality
-    print_highest_cretrality()
+def run_qt_app():
+    import sys
+    from PyQt5 import QtWidgets
+    from ToolBox.GUI import TransportNetworkGUI
+    app = QtWidgets.QApplication(sys.argv)
+    window = TransportNetworkGUI()
+    window.show()
+    app.exec_()
+
+def GUI():
+    import multiprocessing
+    # 使用多进程来运行PyQt应用程序
+    process = multiprocessing.Process(target=run_qt_app)
+    process.start()
 
 
 def find_routes_function():
     from ToolBox.find_routes import create_graph
     create_graph()
+
+
+def find_highest_centrality_function():
+    from ToolBox.find_highest_centrality import print_highest_cretrality
+    print_highest_cretrality()
 
 
 def time_predict_function():
@@ -56,30 +72,41 @@ def Bus_Stop_Utilization_Analysis_function():
 def run_tests():
     plt_graph_function()
     print()
-    print("\033[94mfind highest centrality function:\033[0m")
-    find_highest_centrality_function()
-    print()
+
+    GUI()
+
     print("\033[94mfind routes function:\033[0m")
     find_routes_function()
     print()
+
+    print("\033[94mfind highest centrality function:\033[0m")
+    find_highest_centrality_function()
+    print()
+
     print("\033[94mtime predict function:\033[0m")
     time_predict_function()
     print()
+
     print("\033[94mshortest path function:\033[0m")
     shortest_path_function()
     print()
+
     print("\033[94mroute effciency function:\033[0m")
     route_effciency_function()
     print()
+
     print("\033[94mInteractive Site Map function:\033[0m")
     Interactive_Site_Map_function()
     print()
+
     print("\033[94mPeak Hours Traffic Analysis function:\033[0m")
     Peak_Hours_Traffic_Analysis_function()
     print()
+
     print("\033[94mBus Stop Utilization Analysis function:\033[0m")
     Bus_Stop_Utilization_Analysis_function()
     print()
+
     print("\033[92mAll tests passed!\033[0m")
     print()
 

@@ -7,6 +7,7 @@ import pandas as pd
 import networkx as nx
 import folium
 from PyQt5 import QtWidgets, QtWebEngineWidgets, QtCore
+import multiprocessing
 
 # 辅助函数，用于捕获打印输出
 def capture_print_output(func):
@@ -31,145 +32,18 @@ def plt_graph_function():
     my_graph = create_graph(stops_df, routes_df)
     result = capture_print_output(plot_transport_network)(my_graph)
 
-def Interactive_Site_Map_function():
-    class TransportNetworkGUI(QtWidgets.QMainWindow):
-        def __init__(self):
-            super().__init__()
-            self.setWindowTitle('交通网络管理系统')
-            self.setGeometry(100, 100, 1200, 800)
-            
-            # 创建地图
-            self.map = folium.Map(location=[48.8588443, 2.3470599], zoom_start=13)
-            
-            # 将地图嵌入到Qt窗口中
-            self.webView = QtWebEngineWidgets.QWebEngineView()
-            self.setCentralWidget(self.webView)
-            
-            # 初始化交通网络图
-            self.G = nx.DiGraph()
-            self.add_stops_from_csv()
-            
-            # 显示地图
-            self.show_map()
-            
-            # 添加按钮和功能
-            self.initUI()
-            
-            # 撤销历史记录
-            self.undo_stack = []
-        
-        def initUI(self):
-            # 添加按钮示例
-            add_stop_button = QtWidgets.QPushButton('添加站点', self)
-            add_stop_button.clicked.connect(self.add_stop)
-            add_stop_button.move(50, 10)
-            
-            # 添加删除按钮
-            remove_stop_button = QtWidgets.QPushButton('删除站点', self)
-            remove_stop_button.clicked.connect(self.remove_stop)
-            remove_stop_button.move(160, 10)
-            
-            # 添加撤销按钮
-            undo_button = QtWidgets.QPushButton('撤销删除', self)
-            undo_button.clicked.connect(self.undo_remove)
-            undo_button.move(270, 10)
-            
-            # 其他按钮和功能可依此类推
-        
-        def add_stops_from_csv(self):
-            stops_df = pd.read_csv('urban_transport_network_stops.csv')
-            # 从CSV文件中读取站点信息并添加到地图和网络图中
-            for _, row in stops_df.iterrows():
-                stop_id = str(row['stop_id'])
-                name = row['name']
-                latitude = row['latitude']
-                longitude = row['longitude']
-                zone_type = row['zone_type']
-                
-                # 添加到网络图中
-                self.G.add_node(stop_id, name=name, pos=(latitude, longitude), zone_type=zone_type)
-                
-                # 在地图上添加标记
-                folium.Marker([latitude, longitude], popup=name, tooltip=name).add_to(self.map)
-        
-        def show_map(self):
-            # 将地图保存为HTML文件并在Qt窗口中显示
-            map_file = 'map.html'
-            self.map.save(map_file)
-            abs_path = os.path.abspath(map_file)
-            self.webView.setUrl(QtCore.QUrl.fromLocalFile(abs_path))
-            
-        def add_stop(self):
-            # 弹出对话框获取新站点信息
-            text, ok = QtWidgets.QInputDialog.getText(self, '添加站点', '输入格式: stop_id,name,latitude,longitude,zone_type')
-            if ok and text:
-                stop_info = text.split(',')
-                if len(stop_info) == 5:
-                    stop_id, name, latitude, longitude, zone_type = stop_info
-                    latitude, longitude = float(latitude), float(longitude)
-                    
-                    # 添加到网络图中
-                    self.G.add_node(stop_id, name=name, pos=(latitude, longitude), zone_type=zone_type)
-                    
-                    # 在地图上添加标记
-                    folium.Marker([latitude, longitude], popup=name, tooltip=name).add_to(self.map)
-                    
-                    # 更新地图显示
-                    self.show_map()
-        
-        def remove_stop(self):
-            # 弹出对话框获取要删除的站点ID
-            text, ok = QtWidgets.QInputDialog.getText(self, '删除站点', '输入要删除的站点ID')
-            if ok and text:
-                stop_id = str(text)
-                if stop_id in self.G.nodes:
-                    # 将删除操作记录到撤销历史中
-                    self.undo_stack.append((stop_id, self.G.nodes[stop_id]))
-                    
-                    # 从网络图中移除站点
-                    self.G.remove_node(stop_id)
-                    
-                    # 更新地图显示
-                    self.update_map_after_removal(stop_id)
-        
-        def undo_remove(self):
-            # 恢复最后一次删除操作
-            if self.undo_stack:
-                stop_id, data = self.undo_stack.pop()
-                
-                # 添加站点回到网络图中
-                self.G.add_node(stop_id, **data)
-                
-                # 在地图上添加标记
-                latitude, longitude = data['pos']
-                name = data['name']
-                folium.Marker([latitude, longitude], popup=name, tooltip=name).add_to(self.map)
-                
-                # 更新地图显示
-                self.show_map()
-        
-        def update_map_after_removal(self, stop_id):
-            # 重新生成地图并显示
-            self.map = folium.Map(location=[48.8588443, 2.3470599], zoom_start=13)
-            
-            # 添加剩余站点到地图
-            for node in self.G.nodes(data=True):
-                latitude, longitude = node[1]['pos']
-                name = node[1]['name']
-                folium.Marker([latitude, longitude], popup=name, tooltip=name).add_to(self.map)
-            
-            # 显示更新后的地图
-            self.show_map()
+def run_qt_app():
+    from ToolBox.GUI import TransportNetworkGUI
+    app = QtWidgets.QApplication(sys.argv)
+    window = TransportNetworkGUI()
+    window.show()
+    app.exec_()
 
-    def run_qt_app():
-        app = QtWidgets.QApplication([])
-        window = TransportNetworkGUI()
-        window.show()
-        app.exec_()
-    
-    result = capture_print_output(run_qt_app)()
-    messagebox.showinfo("结果", "互动地图已启动")
-    
+def Interactive_Site_Map_function():
+    # 使用多进程来运行PyQt应用程序
+    process = multiprocessing.Process(target=run_qt_app)
+    process.start()
+
 def find_routes_function():
     from ToolBox.find_routes import create_graph
     result = capture_print_output(create_graph)()
@@ -215,17 +89,17 @@ def Bus_Stop_Utilization_Analysis_function():
 
 def create_ui():
     root = tk.Tk()
-    root.title("交通网络分析工具")
-    
-    tk.Button(root, text="绘制交通网络图", command=plt_graph_function).pack(pady=10)
-    tk.Button(root, text="互动地图功能", command=Interactive_Site_Map_function).pack(pady=10)
-    tk.Button(root, text="查找路线", command=find_routes_function).pack(pady=10)
-    tk.Button(root, text="查找最高中心性", command=find_highest_centrality_function).pack(pady=10)
-    tk.Button(root, text="时间预测", command=time_predict_function).pack(pady=10)
-    tk.Button(root, text="最短路径计算", command=shortest_path_function).pack(pady=10)
-    tk.Button(root, text="路线效率分析", command=route_effciency_function).pack(pady=10)
-    tk.Button(root, text="高峰时段交通分析", command=Peak_Hours_Traffic_Analysis_function).pack(pady=10)
-    tk.Button(root, text="公交站点利用率分析", command=Bus_Stop_Utilization_Analysis_function).pack(pady=10)
+    root.title("Traffic network analysis tools")
+    root.geometry("400x450")
+    tk.Button(root, text="Transportation network graph", command=plt_graph_function).pack(pady=10)
+    tk.Button(root, text="GUI", command=Interactive_Site_Map_function).pack(pady=10)
+    tk.Button(root, text="Find routes", command=find_routes_function).pack(pady=10)
+    tk.Button(root, text="Find highest centrality", command=find_highest_centrality_function).pack(pady=10)
+    tk.Button(root, text="Time predict", command=time_predict_function).pack(pady=10)
+    tk.Button(root, text="Shortest path", command=shortest_path_function).pack(pady=10)
+    tk.Button(root, text="Route effciency", command=route_effciency_function).pack(pady=10)
+    tk.Button(root, text="Peak hours traffic analysis", command=Peak_Hours_Traffic_Analysis_function).pack(pady=10)
+    tk.Button(root, text="Bus stop utilization analysis", command=Bus_Stop_Utilization_Analysis_function).pack(pady=10)
     
     root.mainloop()
 
