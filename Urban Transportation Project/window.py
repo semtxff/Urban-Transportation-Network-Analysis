@@ -2,11 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 import io
 import sys
-import os
-import pandas as pd
-import networkx as nx
-import folium
-from PyQt5 import QtWidgets, QtWebEngineWidgets, QtCore
+from PyQt5 import QtWidgets
 import multiprocessing
 
 # 辅助函数，用于捕获打印输出
@@ -70,12 +66,10 @@ def route_effciency_function():
     messagebox.showinfo("结果", result)
 
 def Peak_Hours_Traffic_Analysis_function():
-    from ToolBox.plt_graph import load_routes_df, load_stops_df
+    from ToolBox.plt_graph import load_routes_df, G
     from ToolBox.Peak_Hours_Traffic_Analysis import print_peak_hour_route_between_stops, create_graph, analyze_peak_hours_traffic
     from ToolBox.find_routes import start_node, end_node
-    stops_df = load_stops_df("urban_transport_network_stops.csv")
     routes_df = load_routes_df("urban_transport_network_routes.csv")
-    G = create_graph(stops_df, routes_df)
     optimized_routes_df = analyze_peak_hours_traffic(routes_df)
     result = capture_print_output(print_peak_hour_route_between_stops)(G, optimized_routes_df, start_node, end_node)
     messagebox.showinfo("结果", result)
@@ -87,10 +81,11 @@ def Bus_Stop_Utilization_Analysis_function():
     result = f"未充分利用的站点: {underutilized_result}\n推荐的新站点: {recommended_result}"
     messagebox.showinfo("结果", result)
 
+
 def create_ui():
     root = tk.Tk()
     root.title("Traffic network analysis tools")
-    root.geometry("400x450")
+    root.geometry("400x500")
     tk.Button(root, text="Transportation network graph", command=plt_graph_function).pack(pady=10)
     tk.Button(root, text="GUI", command=Interactive_Site_Map_function).pack(pady=10)
     tk.Button(root, text="Find routes", command=find_routes_function).pack(pady=10)
@@ -100,7 +95,7 @@ def create_ui():
     tk.Button(root, text="Route effciency", command=route_effciency_function).pack(pady=10)
     tk.Button(root, text="Peak hours traffic analysis", command=Peak_Hours_Traffic_Analysis_function).pack(pady=10)
     tk.Button(root, text="Bus stop utilization analysis", command=Bus_Stop_Utilization_Analysis_function).pack(pady=10)
-    
+
     root.mainloop()
 
 if __name__ == "__main__":
