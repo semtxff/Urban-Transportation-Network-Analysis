@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox, simpledialog
+from tkinter import messagebox
 import io
 import sys
 
@@ -25,15 +25,10 @@ def plt_graph_function():
     routes_df = load_routes_df("urban_transport_network_routes.csv")
     my_graph = create_graph(stops_df, routes_df)
     result = capture_print_output(plot_transport_network)(my_graph)
-    messagebox.showinfo("结果", result)
 
 def find_highest_centrality_function():
     from ToolBox.find_highest_centrality import print_highest_cretrality
-    from ToolBox.plt_graph import create_graph, load_routes_df, load_stops_df
-    stops_df = load_stops_df("urban_transport_network_stops.csv")
-    routes_df = load_routes_df("urban_transport_network_routes.csv")
-    G = create_graph(stops_df, routes_df)
-    result = capture_print_output(print_highest_cretrality)(G)
+    result = capture_print_output(print_highest_cretrality)()
     messagebox.showinfo("结果", result)
 
 def find_routes_function():
