@@ -1,20 +1,56 @@
 import os
-import folium
-from PyQt5 import QtWidgets, QtWebEngineWidgets, QtCore
-import os
 import sys
+import folium
 
-# 获取当前脚本文件的目录
+# Get the directory of the current script file(获取当前脚本文件的目录)
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-# 将上级目录（项目根目录）添加到系统路径中
+# Add the parent directory (project root directory) to the system path 将上级目录（项目根目录）添加到系统路径中
 project_root = os.path.dirname(current_dir)
 sys.path.append(project_root)
 
-from ToolBox.plt_graph import create_graph
-from ToolBox.plt_graph import load_routes_df
-from ToolBox.plt_graph import load_stops_df
+from PyQt5 import QtWidgets, QtWebEngineWidgets, QtCore
+from ToolBox.plt_graph import load_routes_df, load_stops_df
 
+def create_graph(stops_df, routes_df):
+    graph = {}
+    for _, row in stops_df.iterrows():
+        stop_id = row['stop_id']
+        graph[stop_id] = {
+            'pos': (row['latitude'], row['longitude']),
+            'name': row['name'],
+            'zone_type': row['zone_type'],
+            'out_degree': 0,
+            'in_degree': 0
+        }
+
+    for _, row in routes_df.iterrows():
+        start_stop_id = row['start_stop_id']
+        end_stop_id = row['end_stop_id']
+        distance = row['distance']
+        
+        if start_stop_id not in graph:
+            graph[start_stop_id] = {
+                'pos': (0, 0),
+                'name': '',
+                'zone_type': '',
+                'out_degree': 0,
+                'in_degree': 0
+            }
+        if end_stop_id not in graph:
+            graph[end_stop_id] = {
+                'pos': (0, 0),
+                'name': '',
+                'zone_type': '',
+                'out_degree': 0,
+                'in_degree': 0
+            }
+        
+        graph[start_stop_id][end_stop_id] = distance
+        graph[start_stop_id]['out_degree'] += 1
+        graph[end_stop_id]['in_degree'] += 1
+    
+    return graph
 
 class TransportNetworkGUI(QtWidgets.QMainWindow):
     def __init__(self):
