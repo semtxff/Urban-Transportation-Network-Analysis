@@ -59,10 +59,6 @@ class TransportNetworkGUI(QtWidgets.QWidget):
         return f.getvalue()
 
     def plt_graph_function(self):
-        output = self.capture_output(self._plt_graph_function)
-        self.show_output(output)
-
-    def _plt_graph_function(self):
         stops_df = load_stops_df("urban_transport_network_stops.csv")
         routes_df = load_routes_df("urban_transport_network_routes.csv")
         my_graph = create_graph_plot(stops_df, routes_df)
