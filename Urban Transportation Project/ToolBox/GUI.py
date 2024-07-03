@@ -147,9 +147,3 @@ class TransportNetworkGUI(QtWidgets.QMainWindow):
             name = data['name']
             folium.Marker([latitude, longitude], popup=name, tooltip=name).add_to(self.map)
         self.show_map()
-
-# 创建应用程序并显示窗口
-app = QtWidgets.QApplication([])
-window = TransportNetworkGUI()
-window.show()
-app.exec_()
