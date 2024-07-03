@@ -84,10 +84,8 @@ def calculate_paths_travel_time(graph, paths):
 def print_time_predict():
     # Find all paths and calculate their travel times
     from ToolBox.find_routes import start_node, end_node
-
+    G = create_graph(stops_df, routes_df)
     all_paths = find_all_paths(G, start_node, end_node)
     paths_travel_times = calculate_paths_travel_time(G, all_paths)
     for path, travel_time in paths_travel_times:
         print(f"Path: {' -> '.join(map(str, path))}, Travel time: {travel_time:.2f} minutes")
-
-G = create_graph(stops_df, routes_df)
