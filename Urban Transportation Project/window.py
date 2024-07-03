@@ -1,17 +1,18 @@
 import sys
-import multiprocessing
 from io import StringIO
 from contextlib import redirect_stdout
 from PyQt5 import QtWidgets, QtCore
 
-# 导入功能模块
+# Import TrafficNetworkGUI from GUI.py
+from ToolBox.GUI import TrafficNetworkGUI
+
+# Import other functionalities
 from ToolBox.plt_graph import plot_transport_network, create_graph as create_graph_plot, load_routes_df, load_stops_df
 from ToolBox.find_routes import create_graph as create_graph_routes
 from ToolBox.find_highest_centrality import print_highest_cretrality
 from ToolBox.time_predict import print_time_predict
 from ToolBox.shortest_path import print_shortest_path
 from ToolBox.route_efficiency import route_efficiency_analysis
-from ToolBox.Interactive_Site_Map import add_map
 from ToolBox.Peak_Hours_Traffic_Analysis import print_peak_hour_route_between_stops, analyze_peak_hours_traffic
 from ToolBox.find_routes import start_node, end_node
 from ToolBox.Bus_Stop_Utilization_Analysis import print_underutilized_stops, print_recommended_stops
@@ -31,10 +32,10 @@ class TransportNetworkGUI(QtWidgets.QWidget):
             "Time Predict": self.time_predict_function,
             "Shortest Path": self.shortest_path_function,
             "Route Efficiency": self.route_effciency_function,
-            "Interactive Site Map": self.Interactive_Site_Map_function,
             "Peak Hours Traffic Analysis": self.Peak_Hours_Traffic_Analysis_function,
             "Bus Stop Utilization Analysis": self.Bus_Stop_Utilization_Analysis_function,
-            "Reset Node": self.reset_node_function  # 添加Reset Node按钮
+            "Traffic Network GUI": self.open_traffic_network_gui,  # Added Traffic Network GUI button
+            "Reset Node": self.reset_node_function  # Added Reset Node button
         }
 
         for name, func in self.buttons.items():
@@ -84,10 +85,6 @@ class TransportNetworkGUI(QtWidgets.QWidget):
         output = self.capture_output(route_efficiency_analysis)
         self.show_output(output)
 
-    def Interactive_Site_Map_function(self):
-        output = self.capture_output(add_map)
-        self.show_output(output)
-
     def Peak_Hours_Traffic_Analysis_function(self):
         output = self.capture_output(self._Peak_Hours_Traffic_Analysis_function)
         self.show_output(output)
@@ -110,6 +107,10 @@ class TransportNetworkGUI(QtWidgets.QWidget):
     def reset_node_function(self):
         QtCore.QCoreApplication.quit()
         QtCore.QProcess.startDetached(sys.executable, sys.argv)
+
+    def open_traffic_network_gui(self):
+        self.traffic_gui = TrafficNetworkGUI()  # Create an instance of TrafficNetworkGUI
+        self.traffic_gui.show()  # Show TrafficNetworkGUI
 
 def run_qt_app():
     app = QtWidgets.QApplication(sys.argv)
