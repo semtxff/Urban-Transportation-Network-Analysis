@@ -2,7 +2,6 @@ import unittest
 import pandas as pd
 import os
 import sys
-import heapq
 
 # Get the directory of the current script file
 current_dir = os.path.dirname(os.path.abspath(__file__))
