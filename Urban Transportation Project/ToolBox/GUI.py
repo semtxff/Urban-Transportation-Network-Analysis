@@ -63,8 +63,14 @@ class TrafficNetworkGUI(QtWidgets.QMainWindow):
         undo_button.move(270, 10)
         
         show_routes_button = QtWidgets.QPushButton('显示路线', self)
-        show_routes_button.clicked.connect(self.draw_routes_on_map)
+        show_routes_button.clicked.connect(self.create_route_buttons)
         show_routes_button.move(380, 10)
+        
+        # Create a layout for route buttons
+        self.route_buttons_layout = QtWidgets.QVBoxLayout()
+        self.route_buttons_widget = QtWidgets.QWidget(self)
+        self.route_buttons_widget.setLayout(self.route_buttons_layout)
+        self.route_buttons_widget.setGeometry(1000, 50, 150, 700)
         
         # Other buttons and functionalities can be added here
     
@@ -184,36 +190,38 @@ class TrafficNetworkGUI(QtWidgets.QMainWindow):
         path.pop()
         visited[start] = False
     
-    def draw_routes_on_map(self):
-        if not self.route_paths:
-            QtWidgets.QMessageBox.warning(self, "警告", "请先设置起点和终点")
-            return
+    def create_route_buttons(self):
+        # Clear previous buttons
+        for i in reversed(range(self.route_buttons_layout.count())): 
+            widget = self.route_buttons_layout.itemAt(i).widget()
+            if widget is not None:
+                widget.deleteLater()
         
-        # Clear previous route drawings
+        # Create buttons for each route
+        for idx, _ in enumerate(self.route_paths):
+            button = QtWidgets.QPushButton(f'路线 {idx + 1}', self)
+            button.clicked.connect(lambda _, idx=idx: self.draw_single_route(idx))
+            self.route_buttons_layout.addWidget(button)
+    
+    def draw_single_route(self, route_idx):
+        # Clear the map
         self.map = folium.Map(location=[48.8588443, 2.3470599], zoom_start=13)
         
         # Draw stops on the map
         for stop_id, data in self.stops.items():
             folium.Marker([data['latitude'], data['longitude']], popup=data['name'], tooltip=data['name']).add_to(self.map)
         
-        # Draw routes on the map with different colors
-        colors = ['blue', 'green', 'red', 'purple', 'orange', 'darkred', 'darkblue', 'darkgreen', 'cadetblue', 'black']
-        for idx, route_path in enumerate(self.route_paths):
-            color = colors[idx % len(colors)]
-            for i in range(len(route_path) - 1):
-                start_id = route_path[i]
-                end_id = route_path[i + 1]
-                start_lat = self.stops.get(str(start_id), {}).get('latitude', None)
-                start_lon = self.stops.get(str(start_id), {}).get('longitude', None)
-                end_lat = self.stops.get(str(end_id), {}).get('latitude', None)
-                end_lon = self.stops.get(str(end_id), {}).get('longitude', None)
-                if start_lat is not None and start_lon is not None and end_lat is not None and end_lon is not None:
-                    # Offset the start and end points slightly to avoid overlapping lines
-                    start_lat += 0.001 * idx
-                    start_lon += 0.001 * idx
-                    end_lat += 0.001 * idx
-                    end_lon += 0.001 * idx
-                    folium.PolyLine(locations=[(start_lat, start_lon), (end_lat, end_lon)], color=color).add_to(self.map)
+        # Draw the selected route on the map
+        route_path = self.route_paths[route_idx]
+        for i in range(len(route_path) - 1):
+            start_id = route_path[i]
+            end_id = route_path[i + 1]
+            start_lat = self.stops.get(str(start_id), {}).get('latitude', None)
+            start_lon = self.stops.get(str(start_id), {}).get('longitude', None)
+            end_lat = self.stops.get(str(end_id), {}).get('latitude', None)
+            end_lon = self.stops.get(str(end_id), {}).get('longitude', None)
+            if start_lat is not None and start_lon is not None and end_lat is not None and end_lon is not None:
+                folium.PolyLine(locations=[(start_lat, start_lon), (end_lat, end_lon)], color='blue').add_to(self.map)
         
         # Show the updated map
         self.show_map()
