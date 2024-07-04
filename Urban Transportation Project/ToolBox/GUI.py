@@ -266,7 +266,7 @@ class TrafficNetworkGUI(QtWidgets.QMainWindow):
                 end_lat = self.stops.get(str(end_id), {}).get('latitude', None)
                 end_lon = self.stops.get(str(end_id), {}).get('longitude', None)
                 if start_lat is not None and start_lon is not None and end_lat is not None and end_lon is not None:
-                    folium.PolyLine(locations=[(start_lat, start_lon), (end_lat, end_lon)], color='green').add_to(self.map)
+                    folium.PolyLine(locations=[(start_lat, start_lon), (end_lat, end_lon)], color='red').add_to(self.map)
             
             # Show the updated map
             self.show_map()
@@ -336,6 +336,3 @@ def run_qt_app():
     window = TrafficNetworkGUI()
     window.show()
     app.exec_()
-
-if __name__ == "__main__":
-    run_qt_app()
