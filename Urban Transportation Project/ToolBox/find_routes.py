@@ -1,6 +1,6 @@
 import os
 import sys
-# Get the directory of the current script file(获取当前脚本文件的目录)
+# Get the directory of the current script file获取当前脚本文件的目录
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Add the parent directory (project root directory) to the system path 将上级目录（项目根目录）添加到系统路径中
@@ -24,7 +24,7 @@ def dfs(graph, start, end, visited, path):
     path.pop()
     visited[start] = False
 
-# 创建有向图
+# Creating a directed graph创建有向图
 def create_graph():   
     graph = {}
 
@@ -36,12 +36,12 @@ def create_graph():
             graph[start_stop_id] = []
         graph[start_stop_id].append(end_stop_id)
 
-    # 初始化访问标记和路径
+    # Initialize access tokens and paths初始化访问标记和路径
     visited = {node: False for node in graph}
     path = []
 
-    # 查找所有可能的路线 
+    # Find all possible routes查找所有可能的路线 
     dfs(graph, start_node, end_node, visited, path)
 
-start_node = int(simpledialog.askstring("输入", "请输入起点站 (start node):"))
-end_node = int(simpledialog.askstring("输入", "请输入终点站 (end node):"))
+start_node = int(simpledialog.askstring("Type", "start node:"))
+end_node = int(simpledialog.askstring("Type", "end node:"))

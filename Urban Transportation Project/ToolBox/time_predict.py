@@ -36,7 +36,7 @@ def create_graph(stops_df, routes_df):
     return graph
 
 def calculate_travel_time(distance, start_zone, end_zone):
-    # Define stop times based on zone_type
+    # Define stop times based on zone_type根据 zone_type 定义停止时间
     stop_times = {
         'Residential': 2,
         'Commercial': 4,
@@ -82,7 +82,7 @@ def calculate_paths_travel_time(graph, paths):
 
 
 def print_time_predict():
-    # Find all paths and calculate their travel times
+    # Find all paths and calculate their travel times 找到所有路径并计算其行程时间
     from ToolBox.find_routes import start_node, end_node
     G = create_graph(stops_df, routes_df)
     all_paths = find_all_paths(G, start_node, end_node)

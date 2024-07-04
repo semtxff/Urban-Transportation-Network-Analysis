@@ -2,31 +2,31 @@ import os
 import sys
 import heapq
 
-# 获取当前脚本文件的目录
+# Get the directory of the current script file获取当前脚本文件的目录
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-# 将上级目录（项目根目录）添加到系统路径中
+# Add the parent directory (project root directory) to the system path将上级目录（项目根目录）添加到系统路径中
 project_root = os.path.dirname(current_dir)
 sys.path.append(project_root)
 
 from ToolBox.plt_graph import routes_df
 
 def dijkstra(graph, start, end):
-    # 创建一个优先级队列
+    # Creating a priority queue创建一个优先级队列
     priority_queue = []
     heapq.heappush(priority_queue, (0, start))  # (distance, node)
     
-    # 创建一个字典以存储从起点到每个节点的最短距离
+    # Create a dictionary to store the shortest distance from the starting point to each node创建一个字典以存储从起点到每个节点的最短距离
     distances = {node: float('inf') for node in graph}
     distances[start] = 0
     
-    # 创建一个字典以存储前驱节点，以便重构路径
+    # Create a dictionary to store predecessor nodes so that the path can be reconstructed创建一个字典以存储前驱节点，以便重构路径
     previous_nodes = {node: None for node in graph}
     
     while priority_queue:
         current_distance, current_node = heapq.heappop(priority_queue)
         
-        # 如果当前节点就是终点，构建并返回路径
+        # If the current node is the end point, build and return the path如果当前节点就是终点，构建并返回路径
         if current_node == end:
             path = []
             while previous_nodes[current_node] is not None:
@@ -35,11 +35,11 @@ def dijkstra(graph, start, end):
             path.insert(0, start)
             return path, current_distance
         
-        # 遍历当前节点的邻居
+        # Traverse the neighbors of the current node遍历当前节点的邻居
         for neighbor, weight in graph[current_node]:
             distance = current_distance + weight
             
-            # 如果找到更短的路径，更新距离和前驱节点，并将邻居加入队列
+            # If a shorter path is found, update the distance and predecessor node, and add the neighbor to the queue如果找到更短的路径，更新距离和前驱节点，并将邻居加入队列
             if distance < distances[neighbor]:
                 distances[neighbor] = distance
                 previous_nodes[neighbor] = current_node
@@ -47,7 +47,7 @@ def dijkstra(graph, start, end):
     
     return None, float('inf')
 
-# 创建有向带权图
+# Creating a directed weighted graph创建有向带权图
 def create_graph():
     graph = {}
     

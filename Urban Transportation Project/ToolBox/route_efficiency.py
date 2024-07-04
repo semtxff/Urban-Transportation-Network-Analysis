@@ -2,10 +2,10 @@ import os
 import sys
 import heapq
 
-# 获取当前脚本文件的目录
+# Get the directory of the current script file获取当前脚本文件的目录
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-# 将上级目录（项目根目录）添加到系统路径中
+# Add the parent directory (project root directory) to the system path将上级目录（项目根目录）添加到系统路径中
 project_root = os.path.dirname(current_dir)
 sys.path.append(project_root)
 
@@ -43,7 +43,7 @@ def calculate_travel_time(distance, start_zone, end_zone):
     }
     
     average_speed = 40.0  # km/h
-    travel_time = distance / average_speed * 60  # convert to minutes
+    travel_time = distance / average_speed * 60  # convert to minutes转换为分钟
     start_stop_time = stop_times.get(start_zone, 0)
     end_stop_time = stop_times.get(end_zone, 0)
     
@@ -78,10 +78,10 @@ def calculate_paths_travel_time(graph, paths):
         paths_travel_time.append((path, total_travel_time))
     return paths_travel_time
 
-# Task 2: Dijkstra算法来寻找最短路径
+# Task 2: Dijkstra algorithm to find the shortest path.Dijkstra算法来寻找最短路径
 def dijkstra(graph, start, end):
     priority_queue = []
-    heapq.heappush(priority_queue, (0, start))  # (distance, node)
+    heapq.heappush(priority_queue, (0, start))  # (distance, node)（距离，节点）
     
     distances = {node: float('inf') for node in graph}
     distances[start] = 0
@@ -123,7 +123,7 @@ def create_weighted_graph(routes_df):
     
     return graph
 
-# Task 3: 路线效率分析
+# Task 3: Route efficiency analysis路线效率分析
 def calculate_efficiency(total_distance, travel_time):
     return total_distance / travel_time if travel_time > 0 else float('inf')
 
@@ -133,21 +133,21 @@ def route_efficiency_analysis():
     stops_graph = create_graph(stops_df, routes_df)
     weighted_graph = create_weighted_graph(routes_df)
     
-    # 找到所有路径并计算其旅行时间
+    # Find all paths and calculate their travel times找到所有路径并计算其旅行时间
     all_paths = find_all_paths(stops_graph, start_node, end_node)
     paths_travel_times = calculate_paths_travel_time(stops_graph, all_paths)
     
-    # 找到最短路径
+    # Find the shortest path找到最短路径
     shortest_path, shortest_distance = dijkstra(weighted_graph, start_node, end_node)
     
-    # 计算每条路径的效率
+    # Calculate the efficiency of each path计算每条路径的效率
     efficiencies = []
     for path, travel_time in paths_travel_times:
         total_distance = sum(stops_graph[path[i]]['edges'][path[i+1]] for i in range(len(path) - 1))
         efficiency = calculate_efficiency(total_distance, travel_time)
         efficiencies.append((path, efficiency, total_distance, travel_time))
     
-    # 找到最有效率的路径
+    # Find the most efficient path找到最有效率的路径
     most_efficient_path = min(efficiencies, key=lambda x: x[1])
     
     print(f"Most efficient path: {' -> '.join(map(str, most_efficient_path[0]))}, Efficiency: {most_efficient_path[1]:.2f}, Total Distance: {most_efficient_path[2]:.2f} km, Travel Time: {most_efficient_path[3]:.2f} minutes")

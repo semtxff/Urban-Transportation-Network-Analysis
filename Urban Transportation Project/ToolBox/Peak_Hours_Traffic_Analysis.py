@@ -32,13 +32,13 @@ def create_graph(stops_df, routes_df):
     return graph
 
 def analyze_peak_hours_traffic(routes_df, congestion_factor=1.5, stop_delay=2):
-    # Create a copy of the routes DataFrame to avoid modifying the original data
+    # Create a copy of the routes DataFrame to avoid modifying the original data创建路线 DataFrame 的副本以避免修改原始数据
     optimized_routes_df = routes_df.copy()
     
-    # Calculate increased travel times due to congestion and stop delays
+    # Calculate increased travel times due to congestion and stop delays计算因交通拥堵和站点延误而增加的行程时间
     optimized_routes_df['peak_hour_distance'] = optimized_routes_df['distance'] * congestion_factor
-    optimized_routes_df['peak_hour_time'] = optimized_routes_df['peak_hour_distance'] / 10  # Assuming average speed is 10 km/h
-    optimized_routes_df['peak_hour_time'] += stop_delay  # Adding delay at each stop
+    optimized_routes_df['peak_hour_time'] = optimized_routes_df['peak_hour_distance'] / 10  # Assuming average speed is 10 km/h假设平均速度为 10 公里/小时
+    optimized_routes_df['peak_hour_time'] += stop_delay  # Adding delay at each stop每站增加延误
     
     return optimized_routes_df
 
@@ -65,7 +65,7 @@ def calculate_path_time(graph, path, optimized_routes_df):
         if not route.empty:
             total_time += route.iloc[0]['peak_hour_time']
         else:
-            return float('inf')  # 如果路径中有不连通的部分，则认为此路径无效
+            return float('inf')  # If there are disconnected parts in the path, the path is considered invalid.如果路径中有不连通的部分，则认为此路径无效
     return total_time
 
 def print_peak_hour_route_between_stops(graph, optimized_routes_df, start_stop_id, end_stop_id):
