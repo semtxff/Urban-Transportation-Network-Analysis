@@ -3,16 +3,27 @@ import sys
 import pandas as pd
 import folium
 from PyQt5 import QtWidgets, QtCore, QtWebEngineWidgets
-
-# Get the directory of the current script file
+import heapq
+import numpy as np
+# 获取当前脚本文件的目录
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-# Add the parent directory (project root directory) to the system path
+# 将上级目录（项目根目录）添加到系统路径中
 project_root = os.path.dirname(current_dir)
 sys.path.append(project_root)
 
 from ToolBox.plt_graph import routes_df
 routes_df = routes_df[['start_stop_id', 'end_stop_id']]
+
+def haversine(lat1, lon1, lat2, lon2):
+    R = 6371.0  # 地球半径，单位为千米
+    lat1, lon1, lat2, lon2 = map(np.radians, [lat1, lon1, lat2, lon2])
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+    a = np.sin(dlat / 2)**2 + np.cos(lat1) * np.cos(lat2) * np.sin(dlon / 2)**2
+    c = 2 * np.arctan2(np.sqrt(a), np.sqrt(1 - a))
+    distance = R * c
+    return distance
 
 class TrafficNetworkGUI(QtWidgets.QMainWindow):
     def __init__(self):
@@ -202,6 +213,11 @@ class TrafficNetworkGUI(QtWidgets.QMainWindow):
             button = QtWidgets.QPushButton(f'路线 {idx + 1}', self)
             button.clicked.connect(lambda _, idx=idx: self.draw_single_route(idx))
             self.route_buttons_layout.addWidget(button)
+        
+        # Add shortest route button
+        shortest_route_button = QtWidgets.QPushButton('最短路线', self)
+        shortest_route_button.clicked.connect(self.draw_shortest_route)
+        self.route_buttons_layout.addWidget(shortest_route_button)
     
     def draw_single_route(self, route_idx):
         # Clear the map
@@ -225,6 +241,94 @@ class TrafficNetworkGUI(QtWidgets.QMainWindow):
         
         # Show the updated map
         self.show_map()
+    
+    def draw_shortest_route(self):
+        graph = self.create_weighted_graph()
+        from ToolBox.find_routes import start_node, end_node
+        start_node = int(start_node)
+        end_node = int(end_node)
+        shortest_path, _ = dijkstra(graph, start_node, end_node)
+        
+        if shortest_path:
+            # Clear the map
+            self.map = folium.Map(location=[48.8588443, 2.3470599], zoom_start=13)
+            
+            # Draw stops on the map
+            for stop_id, data in self.stops.items():
+                folium.Marker([data['latitude'], data['longitude']], popup=data['name'], tooltip=data['name']).add_to(self.map)
+            
+            # Draw the shortest route on the map
+            for i in range(len(shortest_path) - 1):
+                start_id = shortest_path[i]
+                end_id = shortest_path[i + 1]
+                start_lat = self.stops.get(str(start_id), {}).get('latitude', None)
+                start_lon = self.stops.get(str(start_id), {}).get('longitude', None)
+                end_lat = self.stops.get(str(end_id), {}).get('latitude', None)
+                end_lon = self.stops.get(str(end_id), {}).get('longitude', None)
+                if start_lat is not None and start_lon is not None and end_lat is not None and end_lon is not None:
+                    folium.PolyLine(locations=[(start_lat, start_lon), (end_lat, end_lon)], color='green').add_to(self.map)
+            
+            # Show the updated map
+            self.show_map()
+        else:
+            QtWidgets.QMessageBox.warning(self, "警告", "没有找到从起点到终点的路径")
+
+    def create_weighted_graph(self):
+        graph = {}
+
+        stops_df = pd.read_csv('urban_transport_network_stops.csv')
+        stops_dict = {row['stop_id']: (row['latitude'], row['longitude']) for _, row in stops_df.iterrows()}
+        
+        for _, row in routes_df.iterrows():
+            start_stop_id = row['start_stop_id']
+            end_stop_id = row['end_stop_id']
+            
+            if start_stop_id in stops_dict and end_stop_id in stops_dict:
+                start_lat, start_lon = stops_dict[start_stop_id]
+                end_lat, end_lon = stops_dict[end_stop_id]
+                route_length = haversine(start_lat, start_lon, end_lat, end_lon)
+                
+                if start_stop_id not in graph:
+                    graph[start_stop_id] = []
+                graph[start_stop_id].append((end_stop_id, route_length))
+        
+        return graph
+
+def dijkstra(graph, start, end):
+    # 创建一个优先级队列
+    priority_queue = []
+    heapq.heappush(priority_queue, (0, start))  # (distance, node)
+    
+    # 创建一个字典以存储从起点到每个节点的最短距离
+    distances = {node: float('inf') for node in graph}
+    distances[start] = 0
+    
+    # 创建一个字典以存储前驱节点，以便重构路径
+    previous_nodes = {node: None for node in graph}
+    
+    while priority_queue:
+        current_distance, current_node = heapq.heappop(priority_queue)
+        
+        # 如果当前节点就是终点，构建并返回路径
+        if current_node == end:
+            path = []
+            while previous_nodes[current_node] is not None:
+                path.insert(0, current_node)
+                current_node = previous_nodes[current_node]
+            path.insert(0, start)
+            return path, current_distance
+        
+        # 遍历当前节点的邻居
+        for neighbor, weight in graph[current_node]:
+            distance = current_distance + weight
+            
+            # 如果找到更短的路径，更新距离和前驱节点，并将邻居加入队列
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                previous_nodes[neighbor] = current_node
+                heapq.heappush(priority_queue, (distance, neighbor))
+    
+    return None, float('inf')
 
 # Ensure the main app runs the TrafficNetworkGUI
 def run_qt_app():
