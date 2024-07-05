@@ -84,6 +84,6 @@ def print_peak_hour_route_between_stops(graph, optimized_routes_df, start_stop_i
 
     if best_path:
         path_str = " -> ".join(map(str, best_path))
-        print(f"Best route from {start_stop_id} to {end_stop_id} during peak hours: {path_str} with total time {best_time:.2f} minutes")
+        print(f"Best route from {start_stop_id} to {end_stop_id} during peak hours: {path_str}  Extended time is {best_time:.2f} minutes")
     else:
         print(f"No valid route found between stop {start_stop_id} and stop {end_stop_id}")
