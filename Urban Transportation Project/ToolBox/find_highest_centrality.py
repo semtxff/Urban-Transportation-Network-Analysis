@@ -22,7 +22,7 @@ def find_highest_centrality(graph):
     return max_total_node, max_total_degree
 
 # 找到中心度最高的车站
-def print_highest_cretrality():
+def print_highest_centrality():
     max_total_node, max_total_degree = find_highest_centrality(G)
     # 输出结果
     if max_total_node is not None:
