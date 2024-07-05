@@ -9,7 +9,7 @@ from ToolBox.GUI import TrafficNetworkGUI
 # Import other functionalities
 from ToolBox.plt_graph import plot_transport_network, create_graph as create_graph_plot, load_routes_df, load_stops_df
 from ToolBox.find_routes import create_graph as create_graph_routes
-from ToolBox.find_highest_centrality import print_highest_cretrality
+from ToolBox.find_highest_centrality import print_highest_centrality
 from ToolBox.time_predict import print_time_predict
 from ToolBox.shortest_path import print_shortest_path
 from ToolBox.route_efficiency import route_efficiency_analysis
@@ -70,7 +70,7 @@ class TransportNetworkGUI(QtWidgets.QWidget):
         self.show_output(output)
 
     def find_highest_centrality_function(self):
-        output = self.capture_output(print_highest_cretrality)
+        output = self.capture_output(print_highest_centrality)
         self.show_output(output)
 
     def time_predict_function(self):
